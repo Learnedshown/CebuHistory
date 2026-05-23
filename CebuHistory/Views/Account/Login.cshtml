@@ -1,0 +1,34 @@
+﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="max-w-md mx-auto px-6 py-20">
+    <div class="text-center mb-10">
+        <h1 class="font-display text-4xl font-bold text-ink mb-2">Sign In</h1>
+        <div class="ornament text-gold">— ✦ —</div>
+    </div>
+    <form asp-action="Login" asp-controller="Account" method="post" class="space-y-5">
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="text-red-700 text-sm bg-red-50 border border-red-200 p-3"></div>
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Email</label>
+            <input asp-for="Email" type="email" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+        </div>
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Password</label>
+            <input asp-for="Password" type="password" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+        </div>
+        <div class="flex items-center gap-2">
+            <input asp-for="RememberMe" type="checkbox" class="accent-sienna" />
+            <label asp-for="RememberMe" class="text-stone text-sm" style="font-family:'Cormorant Garamond',serif;">Remember me</label>
+        </div>
+        <button type="submit" class="w-full bg-sienna hover:bg-sienna-light text-parchment py-3 text-sm tracking-widest uppercase transition-colors" style="font-family:'Cormorant Garamond',serif;">
+            Sign In
+        </button>
+        <p class="text-center text-stone text-sm" style="font-family:'Cormorant Garamond',serif;">
+            No account? <a href="/Account/Register" class="text-sienna hover:underline">Register here</a>
+        </p>
+    </form>
+</div>

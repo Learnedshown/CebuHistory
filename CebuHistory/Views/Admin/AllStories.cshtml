@@ -1,0 +1,57 @@
+﻿@model List<Story>
+@{
+    ViewData["Title"] = "All Stories";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="font-['Playfair_Display'] text-3xl font-bold">All Stories</h1>
+        <a href="/Admin/CreateStory" class="bg-[#8b3a18] text-white px-4 py-2 text-sm rounded hover:bg-[#b0501f]">+ New Story</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="bg-white border rounded overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3 text-left">Title</th>
+                    <th class="p-3 text-left">Author</th>
+                    <th class="p-3 text-left">Era</th>
+                    <th class="p-3 text-left">Status</th>
+                    <th class="p-3 text-left">Submitted By</th>
+                    <th class="p-3 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var story in Model)
+                {
+                    var statusColor = story.Status == "Pending" ? "text-amber-600" : (story.Status == "Published" ? "text-green-600" : "text-red-600");
+                    <tr class="border-t">
+                        <td class="p-3">@story.Title</td>
+                        <td class="p-3">@story.Author</td>
+                        <td class="p-3">@story.Era</td>
+                        <td class="p-3"><span class="@statusColor font-semibold">@story.Status</span></td>
+                        <td class="p-3">@(story.SubmittedByName ?? "Admin")</td>
+                        <td class="p-3">
+                            <a href="/Admin/EditStory/@story.Id" class="text-blue-600 mr-3">Edit</a>
+                            <form method="post" asp-action="DeleteStory" asp-route-id="@story.Id" class="inline" onsubmit="return confirm('Delete this story?')">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="text-red-600">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4">
+        <a href="/Admin" class="text-[#8b3a18]">← Back to Dashboard</a>
+    </div>
+</div>

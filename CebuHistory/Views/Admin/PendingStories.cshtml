@@ -1,0 +1,137 @@
+﻿@model List<Story>
+@{
+    ViewData["Title"] = "Pending Stories";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-12">
+    <h1 class="font-['Playfair_Display'] text-3xl mb-4">Pending Stories</h1>
+    <p class="text-gray-600 mb-8">Review and approve stories submitted by users.</p>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-12 bg-gray-50">
+            <p class="text-gray-500">No pending stories. Check back later!</p>
+        </div>
+    }
+    else
+    {
+        <div class="space-y-6">
+            @foreach (var story in Model)
+            {
+                <div class="border p-6 bg-white rounded-lg">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex gap-3 text-sm text-gray-500 mb-2">
+                                <span>Submitted by: <strong>@(story.SubmittedByName ?? "Anonymous")</strong></span>
+                                <span>📅 @story.SubmittedAt?.ToString("MMM dd, yyyy")</span>
+                                @if (story.SubmittedByUser != null)
+                                {
+                                    <span>📧 @story.SubmittedByUser.Email</span>
+                                }
+                            </div>
+                            <h2 class="font-['Playfair_Display'] text-xl font-bold">@story.Title</h2>
+                            <p class="text-gray-600 mt-2">@story.Excerpt</p>
+                            <div class="flex gap-3 mt-2 text-sm text-gray-500">
+                                <span>📂 @story.Era</span>
+                                <span>🏷️ @story.Category</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 ml-4">
+                            <button onclick="openApproveModal(@story.Id, '@story.Title.Replace("'", "\\'")')"
+                                    class="bg-green-600 text-white px-4 py-2 text-sm rounded hover:bg-green-700">
+                                ✓ Approve
+                            </button>
+                            <button onclick="openRejectModal(@story.Id, '@story.Title.Replace("'", "\\'")')"
+                                    class="bg-red-600 text-white px-4 py-2 text-sm rounded hover:bg-red-700">
+                                ✗ Reject
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t">
+                        <h3 class="font-bold text-sm mb-2">Full Story:</h3>
+                        <div class="prose max-w-none text-sm bg-gray-50 p-4 rounded max-h-60 overflow-y-auto">
+                            @foreach (var para in story.Body.Split('\n'))
+                            {
+                                if (!string.IsNullOrWhiteSpace(para))
+                                {
+                                    <p>@para</p>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="mt-8">
+        <a href="/Admin" class="text-[#8b3a18]">← Back to Dashboard</a>
+    </div>
+</div>
+
+<!-- Approve Modal -->
+<div id="approveModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">Approve Story</h3>
+        <p class="mb-4">Are you sure you want to approve "<span id="approveTitle"></span>"? It will be published immediately.</p>
+        <form id="approveForm" method="post" asp-action="ApproveStory">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="approveId" />
+            <div class="flex gap-3 justify-end">
+                <button type="button" onclick="closeApproveModal()" class="px-4 py-2 border rounded">Cancel</button>
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Approve</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div id="rejectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">Reject Story</h3>
+        <p class="mb-2">Reject "<span id="rejectTitle"></span>"</p>
+        <form id="rejectForm" method="post" asp-action="RejectStory">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="rejectId" />
+            <div class="mb-4">
+                <label class="block text-sm font-bold mb-1">Rejection Reason (visible to user)</label>
+                <textarea name="rejectionReason" rows="3" class="w-full border p-2 rounded" required></textarea>
+            </div>
+            <div class="flex gap-3 justify-end">
+                <button type="button" onclick="closeRejectModal()" class="px-4 py-2 border rounded">Cancel</button>
+                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Reject</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openApproveModal(id, title) {
+        document.getElementById('approveId').value = id;
+        document.getElementById('approveTitle').innerText = title;
+        document.getElementById('approveModal').classList.remove('hidden');
+        document.getElementById('approveModal').classList.add('flex');
+    }
+    function closeApproveModal() {
+        document.getElementById('approveModal').classList.add('hidden');
+        document.getElementById('approveModal').classList.remove('flex');
+    }
+    function openRejectModal(id, title) {
+        document.getElementById('rejectId').value = id;
+        document.getElementById('rejectTitle').innerText = title;
+        document.getElementById('rejectModal').classList.remove('hidden');
+        document.getElementById('rejectModal').classList.add('flex');
+    }
+    function closeRejectModal() {
+        document.getElementById('rejectModal').classList.add('hidden');
+        document.getElementById('rejectModal').classList.remove('flex');
+    }
+</script>

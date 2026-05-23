@@ -1,0 +1,80 @@
+﻿@model EditStoryViewModel
+@{
+    ViewData["Title"] = "Edit Story";
+}
+
+<div class="max-w-3xl mx-auto px-6 py-12">
+    <h1 class="font-['Playfair_Display'] text-3xl font-bold mb-6">Edit Your Story</h1>
+
+    @if (!string.IsNullOrEmpty(Model.RejectionReason))
+    {
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <strong>This story was rejected:</strong> @Model.RejectionReason
+            <br />Please edit and resubmit.
+        </div>
+    }
+
+    <form method="post" class="space-y-5">
+        @Html.AntiForgeryToken()
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Title *</label>
+            <input asp-for="Title" class="w-full bg-white border border-gold/30 px-4 py-2.5" required />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Author</label>
+                <input asp-for="Author" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Era</label>
+                <select asp-for="Era" class="w-full bg-white border border-gold/30 px-4 py-2.5">
+                    <option>Pre-Colonial</option>
+                    <option>Spanish Colonial</option>
+                    <option>Revolution & American Period</option>
+                    <option>World War II</option>
+                    <option>Modern</option>
+                </select>
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Category</label>
+            <select asp-for="Category" class="w-full bg-white border border-gold/30 px-4 py-2.5">
+                <option>War & Resistance</option>
+                <option>Religion & Culture</option>
+                <option>Culture & Daily Life</option>
+                <option>People & Personalities</option>
+                <option>Architecture & Heritage</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Image URL</label>
+            <input asp-for="CoverImage" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Excerpt *</label>
+            <textarea asp-for="Excerpt" rows="2" class="w-full bg-white border border-gold/30 px-4 py-2.5" required></textarea>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Full Story *</label>
+            <textarea asp-for="Body" rows="12" class="w-full bg-white border border-gold/30 px-4 py-2.5 font-mono text-sm" required></textarea>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Tags (comma separated)</label>
+            <input asp-for="Tags" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+        </div>
+
+        <div class="flex gap-4 pt-4">
+            <button type="submit" class="bg-[#8b3a18] text-white px-8 py-3 text-sm tracking-widest uppercase hover:bg-[#b0501f] transition-colors">
+                Save Changes & Resubmit
+            </button>
+            <a href="/SubmitStory/MyStories" class="text-stone text-sm tracking-widest uppercase self-center hover:text-ink">Cancel</a>
+        </div>
+    </form>
+</div>

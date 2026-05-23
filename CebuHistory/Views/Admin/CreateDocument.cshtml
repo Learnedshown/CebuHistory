@@ -1,0 +1,66 @@
+﻿@model DocumentFormViewModel
+@{
+    ViewData["Title"] = "Add Document";
+}
+
+<div class="max-w-2xl mx-auto px-6 py-12">
+    <h1 class="font-display text-3xl font-bold text-ink mb-8">Add Document</h1>
+    <form asp-action="CreateDocument" asp-controller="Admin" method="post" class="space-y-5">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-red-700 text-sm bg-red-50 border border-red-200 p-3"></div>
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Title *</label>
+            <input asp-for="Title" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+        </div>
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Document URL *</label>
+            <input asp-for="DocumentUrl" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" placeholder="https://..." />
+        </div>
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Thumbnail URL</label>
+            <input asp-for="ThumbnailUrl" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" placeholder="https://..." />
+        </div>
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Description</label>
+            <textarea asp-for="Description" rows="3" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Document Type</label>
+                <input asp-for="DocumentType" list="type-list" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+                <datalist id="type-list">
+                    <option value="Chronicle" />
+                    <option value="Map" />
+                    <option value="Decree" />
+                    <option value="Proclamation" />
+                    <option value="Photograph" />
+                    <option value="Manuscript" />
+                </datalist>
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Era</label>
+                <input asp-for="Era" list="era-list" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+                <datalist id="era-list">
+                    <option value="Spanish Colonial" />
+                    <option value="American Period" />
+                    <option value="World War II" />
+                    <option value="Modern" />
+                </datalist>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Year</label>
+                <input asp-for="Year" type="number" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Source</label>
+                <input asp-for="Source" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            </div>
+        </div>
+        <div class="flex gap-4 pt-2">
+            <button type="submit" class="bg-teal text-parchment px-8 py-3 text-sm tracking-widest uppercase hover:bg-teal-light transition-colors" style="font-family:'Cormorant Garamond',serif;">Add Document</button>
+            <a href="/Admin/Documents" class="text-stone text-sm tracking-widest uppercase self-center hover:text-ink" style="font-family:'Cormorant Garamond',serif;">Cancel</a>
+        </div>
+    </form>
+</div>

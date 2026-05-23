@@ -1,0 +1,30 @@
+﻿@model List<CebuHistory.Models.HistoricalDocument>
+@{
+    ViewData["Title"] = "Manage Documents";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="font-display text-3xl font-bold text-ink">Documents</h1>
+        <a href="/Admin/CreateDocument" class="bg-teal text-parchment px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-teal-light transition-colors" style="font-family:'Cormorant Garamond',serif;">+ New Document</a>
+    </div>
+    <div class="bg-parchment border border-gold/20 divide-y divide-gold/15">
+        @foreach (var d in Model)
+        {
+            <div class="flex items-center justify-between px-5 py-4">
+                <div class="flex-1 min-w-0 pr-6">
+                    <p class="font-display font-semibold text-ink truncate">@d.Title</p>
+                    <p class="text-stone text-xs mt-0.5" style="font-family:'Cormorant Garamond',serif;">@d.DocumentType &nbsp;·&nbsp; @d.Era @(d.Year.HasValue ? "· " + d.Year : "")</p>
+                </div>
+                <div class="flex gap-4 flex-shrink-0">
+                    <a href="/Admin/EditDocument/@d.Id" class="text-teal text-xs tracking-widest uppercase hover:underline" style="font-family:'Cormorant Garamond',serif;">Edit</a>
+                    <form method="post" action="/Admin/DeleteDocument/@d.Id" onsubmit="return confirm('Delete this document?')">
+                        @Html.AntiForgeryToken()
+                        <button class="text-red-600 text-xs tracking-widest uppercase hover:underline" style="font-family:'Cormorant Garamond',serif;">Delete</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="mt-4"><a href="/Admin" class="text-sienna text-sm tracking-widest uppercase hover:underline">← Dashboard</a></div>
+</div>

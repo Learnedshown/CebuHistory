@@ -1,0 +1,51 @@
+﻿@model GalleryViewModel
+@{
+    ViewData["Title"] = "Photo Gallery";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-14">
+    <div class="text-center mb-12">
+        <p class="text-stone text-xs tracking-[0.3em] uppercase mb-2" style="font-family:'Cormorant Garamond',serif;">Historical photographs</p>
+        <h1 class="font-display text-5xl font-bold text-ink mb-3">Gallery</h1>
+        <div class="ornament text-gold">— ✦ —</div>
+        <p class="text-stone text-lg mt-4 max-w-xl mx-auto" style="font-family:'Crimson Pro',serif;">
+            Rare and archival photographs from Cebu's past — sepia-tinted windows into another century.
+        </p>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-3 mb-10">
+        <a href="/Gallery" class="era-badge @(string.IsNullOrEmpty(Model.ActiveEra) ? "text-sienna border-sienna bg-sienna/10" : "text-stone border-stone/40 hover:text-sienna hover:border-sienna") transition-colors">All</a>
+        @foreach (var era in Model.Eras)
+        {
+            <a href="/Gallery?era=@Uri.EscapeDataString(era)" class="era-badge @(Model.ActiveEra == era ? "text-sienna border-sienna bg-sienna/10" : "text-stone border-stone/40 hover:text-sienna hover:border-sienna") transition-colors">@era</a>
+        }
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        @foreach (var (photo, i) in Model.Photos.Select((p, i) => (p, i)))
+        {
+            var tall = (i % 7 == 0 || i % 7 == 4);
+            <div class="group relative overflow-hidden bg-ink/5 border border-gold/15 scroll-reveal cursor-pointer @(tall ? "row-span-2" : "")">
+                <img src="@photo.ImageUrl" alt="@photo.Title"
+                     class="w-full @(tall ? "h-80 md:h-[26rem]" : "h-52") object-cover img-sepia group-hover:scale-105 transition-transform duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-ink/85 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-5 flex flex-col justify-end">
+                    <h4 class="font-display text-parchment text-sm font-semibold leading-snug mb-1">@photo.Title</h4>
+                    @if (photo.Year.HasValue)
+                    {
+                        <p class="text-gold text-xs" style="font-family:'Cormorant Garamond',serif;">@photo.Year &nbsp;·&nbsp; @photo.Location</p>
+                    }
+                    <p class="text-parchment/60 text-xs mt-1 leading-relaxed line-clamp-2" style="font-family:'Crimson Pro',serif;">@photo.Description</p>
+                    <p class="text-parchment/40 text-[0.6rem] mt-2 tracking-widest uppercase" style="font-family:'Cormorant Garamond',serif;">Source: @photo.Source</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Photos.Any())
+    {
+        <div class="text-center py-20 text-stone">
+            <p class="font-display text-3xl">No photographs found</p>
+            <a href="/Gallery" class="inline-block mt-4 text-sienna text-sm tracking-widest uppercase">Clear filter</a>
+        </div>
+    }
+</div>

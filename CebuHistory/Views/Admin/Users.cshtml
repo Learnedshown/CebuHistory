@@ -1,0 +1,101 @@
+﻿@using CebuHistory.Data
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
+
+@{
+    ViewData["Title"] = "Manage Users";
+    var users = UserManager.Users.ToList();
+}
+
+<div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="font-['Playfair_Display'] text-3xl font-bold">Manage Users</h1>
+        <p class="text-stone text-sm">Total users: @users.Count</p>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="bg-white border rounded overflow-hidden overflow-x-auto">
+        <table class="w-full min-w-[800px]">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3 text-left">Email</th>
+                    <th class="p-3 text-left">Name</th>
+                    <th class="p-3 text-left">Registered</th>
+                    <th class="p-3 text-left">Stories</th>
+                    <th class="p-3 text-left">Role</th>
+                    <th class="p-3 text-left">Status</th>
+                    <th class="p-3 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in users)
+                {
+                    var isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+                    var userStories = Context.RequestServices.GetService<ApplicationDbContext>()?.Stories.Count(s => s.SubmittedByUserId == user.Id) ?? 0;
+
+                    <tr class="border-t hover:bg-gray-50">
+                        <td class="p-3">@user.Email</td>
+                        <td class="p-3">@($"{user.FirstName} {user.LastName}".Trim())</td>
+                        <td class="p-3">@user.CreatedAt.ToString("MMM dd, yyyy")</td>
+                        <td class="p-3">@userStories</td>
+                        <td class="p-3">
+                            @if (isAdmin)
+                            {
+                                <span class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs font-semibold">Admin</span>
+                            }
+                            else
+                            {
+                                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">User</span>
+                            }
+                        </td>
+                        <td class="p-3">
+                            @if (user.IsActive)
+                            {
+                                <span class="text-green-600 text-sm">✓ Active</span>
+                            }
+                            else
+                            {
+                                <span class="text-red-600 text-sm">✗ Disabled</span>
+                            }
+                        </td>
+                        <td class="p-3">
+                            <div class="flex gap-2">
+                                <form method="post" asp-action="ToggleAdmin" asp-route-userId="@user.Id" class="inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="text-blue-600 text-sm hover:underline">
+                                        @(isAdmin ? "Remove Admin" : "Make Admin")
+                                    </button>
+                                </form>
+                                <span class="text-gray-300">|</span>
+                                <form method="post" asp-action="ToggleUserStatus" asp-route-userId="@user.Id" class="inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="text-amber-600 text-sm hover:underline" onclick="return confirm('@(user.IsActive ? "Disable" : "Enable") this user?')">
+                                        @(user.IsActive ? "Disable" : "Enable")
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (!users.Any())
+    {
+        <div class="text-center py-12 bg-gray-50">
+            <p class="text-gray-500">No users found.</p>
+        </div>
+    }
+
+    <div class="mt-6">
+        <a href="/Admin" class="text-[#8b3a18] hover:underline">← Back to Dashboard</a>
+    </div>
+</div>

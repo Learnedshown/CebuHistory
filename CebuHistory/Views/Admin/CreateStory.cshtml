@@ -1,0 +1,100 @@
+﻿@model StoryFormViewModel
+@{
+    ViewData["Title"] = "New Story";
+}
+
+<div class="max-w-3xl mx-auto px-6 py-12">
+    <h1 class="font-display text-3xl font-bold text-ink mb-8">Publish New Story</h1>
+
+    <form asp-action="CreateStory" asp-controller="Admin" method="post" enctype="multipart/form-data" class="space-y-6">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-red-700 text-sm bg-red-50 border border-red-200 p-3"></div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Title *</label>
+            <input asp-for="Title" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            <span asp-validation-for="Title" class="text-red-600 text-xs"></span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Era</label>
+                <input asp-for="Era" list="era-list" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+                <datalist id="era-list">
+                    <option value="Pre-Colonial / Spanish Contact" />
+                    <option value="Spanish Colonial" />
+                    <option value="Revolution & American Period" />
+                    <option value="World War II" />
+                    <option value="Modern" />
+                </datalist>
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Category</label>
+                <input asp-for="Category" list="cat-list" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+                <datalist id="cat-list">
+                    <option value="War & Resistance" />
+                    <option value="Religion & Culture" />
+                    <option value="Religion & Conversion" />
+                    <option value="Culture & Daily Life" />
+                    <option value="Politics & Governance" />
+                </datalist>
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Author Name</label>
+            <input asp-for="Author" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+        </div>
+
+        <!-- UPLOAD BUTTON - NEW! -->
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Cover Image (Upload from computer)</label>
+            <input type="file" name="CoverImageFile" accept="image/*" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            <p class="text-stone/60 text-xs mt-1">Or provide URL below</p>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Cover Image URL (or fallback)</label>
+            <input asp-for="CoverImage" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" placeholder="https://..." />
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Excerpt (short summary)</label>
+            <textarea asp-for="Excerpt" rows="2" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna"></textarea>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Body *</label>
+            <textarea asp-for="Body" rows="16" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna font-mono text-sm"></textarea>
+            <span asp-validation-for="Body" class="text-red-600 text-xs"></span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Tags (comma-sep)</label>
+                <input asp-for="Tags" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Reading Time (min)</label>
+                <input asp-for="ReadingTime" type="number" min="1" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Status</label>
+                <select asp-for="Status" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna">
+                    <option value="Published">Published</option>
+                    <option value="Draft">Draft</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <input asp-for="IsFeatured" type="checkbox" class="accent-sienna" />
+            <label asp-for="IsFeatured" class="text-stone text-sm">Feature this story on homepage</label>
+        </div>
+
+        <div class="flex gap-4 pt-2">
+            <button type="submit" class="bg-sienna text-parchment px-8 py-3 text-sm tracking-widest uppercase hover:bg-sienna-light transition-colors">Publish Story</button>
+            <a href="/Admin/Stories" class="text-stone text-sm tracking-widest uppercase self-center hover:text-ink">Cancel</a>
+        </div>
+    </form>
+</div>

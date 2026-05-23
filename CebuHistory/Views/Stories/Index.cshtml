@@ -1,0 +1,96 @@
+﻿@model StoriesViewModel
+@{
+    ViewData["Title"] = "Stories";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-14">
+    <div class="text-center mb-12">
+        <p class="text-stone text-xs tracking-[0.3em] uppercase mb-2" style="font-family:'Cormorant Garamond',serif;">Written histories &amp; essays</p>
+        <h1 class="font-display text-5xl font-bold text-ink mb-3">Stories</h1>
+        <div class="ornament text-gold">— ✦ —</div>
+        <p class="text-stone text-lg mt-4 max-w-xl mx-auto" style="font-family:'Crimson Pro',serif;">
+            Narratives drawn from the historical record — from first contact to the modern era.
+        </p>
+    </div>
+
+    <form method="get" action="/Stories" class="mb-10 max-w-xl mx-auto flex">
+        <input type="text" name="q" value="@Model.SearchQuery" placeholder="Search stories…"
+               class="flex-1 bg-parchment/80 border border-gold/30 px-5 py-3 text-ink placeholder-stone/50 focus:outline-none focus:border-sienna text-base"
+               style="font-family:'Cormorant Garamond',serif;" />
+        <button type="submit" class="bg-sienna text-parchment px-6 py-3 text-xs tracking-widest uppercase hover:bg-sienna-light transition-colors"
+                style="font-family:'Cormorant Garamond',serif;">
+            Search
+        </button>
+        @if (!string.IsNullOrEmpty(Model.ActiveEra))
+        {
+            <input type="hidden" name="era" value="@Model.ActiveEra" />
+        }
+        @if (!string.IsNullOrEmpty(Model.ActiveCategory))
+        {
+            <input type="hidden" name="category" value="@Model.ActiveCategory" />
+        }
+    </form>
+
+    <div class="lg:grid lg:grid-cols-4 lg:gap-10">
+        <aside class="lg:col-span-1 mb-8 lg:mb-0">
+            <div class="bg-parchment/60 border border-gold/20 p-5 sticky top-28">
+                <h3 class="font-display text-base font-semibold text-ink mb-4 pb-2 border-b border-gold/30">Filter by Era</h3>
+                <ul class="space-y-1.5">
+                    <li><a href="/Stories@(!string.IsNullOrEmpty(Model.SearchQuery) ? "?q=" + Uri.EscapeDataString(Model.SearchQuery) : "")" class="block text-sm py-1 px-2 transition-colors @(string.IsNullOrEmpty(Model.ActiveEra) ? "text-sienna font-semibold bg-sienna/10" : "text-stone hover:text-sienna")">All Eras</a></li>
+                    @foreach (var era in Model.Eras)
+                    {
+                        <li><a href="/Stories?era=@Uri.EscapeDataString(era)@(!string.IsNullOrEmpty(Model.SearchQuery) ? "&q=" + Uri.EscapeDataString(Model.SearchQuery!) : "")" class="block text-sm py-1 px-2 transition-colors @(Model.ActiveEra == era ? "text-sienna font-semibold bg-sienna/10" : "text-stone hover:text-sienna")">@era</a></li>
+                    }
+                </ul>
+
+                <h3 class="font-display text-base font-semibold text-ink mt-6 mb-4 pb-2 border-b border-gold/30">Category</h3>
+                <ul class="space-y-1.5">
+                    <li><a href="/Stories@(!string.IsNullOrEmpty(Model.ActiveEra) ? "?era=" + Uri.EscapeDataString(Model.ActiveEra) : "")" class="block text-sm py-1 px-2 transition-colors @(string.IsNullOrEmpty(Model.ActiveCategory) ? "text-sienna font-semibold bg-sienna/10" : "text-stone hover:text-sienna")">All Categories</a></li>
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <li><a href="/Stories?category=@Uri.EscapeDataString(cat)@(!string.IsNullOrEmpty(Model.ActiveEra) ? "&era=" + Uri.EscapeDataString(Model.ActiveEra!) : "")" class="block text-sm py-1 px-2 transition-colors @(Model.ActiveCategory == cat ? "text-sienna font-semibold bg-sienna/10" : "text-stone hover:text-sienna")">@cat</a></li>
+                    }
+                </ul>
+            </div>
+        </aside>
+
+        <div class="lg:col-span-3">
+            @if (!Model.Stories.Any())
+            {
+                <div class="text-center py-20 text-stone">
+                    <p class="font-display text-3xl mb-3">No stories found</p>
+                    <a href="/Stories" class="inline-block mt-4 text-sienna text-sm tracking-widest uppercase">Clear filters</a>
+                </div>
+            }
+            else
+            {
+                <p class="text-stone text-sm mb-6 tracking-wide">Showing @Model.Stories.Count story@(Model.Stories.Count != 1 ? "s" : "")</p>
+                <div class="space-y-8">
+                    @foreach (var s in Model.Stories)
+                    {
+                        <a href="/Stories/@s.Slug" class="grid grid-cols-3 gap-5 group card-hover scroll-reveal bg-parchment/40 border border-gold/15 p-0 overflow-hidden">
+                            <div class="col-span-1 overflow-hidden">
+                                <img src="@s.CoverImage" alt="@s.Title" class="w-full h-40 object-cover img-sepia group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <div class="col-span-2 py-5 pr-5 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="era-badge text-sienna border-sienna/40 text-[0.6rem]">@s.Era</span>
+                                        <span class="era-badge text-teal border-teal/40 text-[0.6rem]">@s.Category</span>
+                                    </div>
+                                    <h3 class="font-display text-xl font-semibold text-ink leading-snug mb-2 group-hover:text-sienna transition-colors">@s.Title</h3>
+                                    <p class="text-stone text-sm leading-relaxed line-clamp-2" style="font-family:'Crimson Pro',serif;">@s.Excerpt</p>
+                                </div>
+                                <div class="flex items-center gap-3 mt-3 pt-3 border-t border-gold/20">
+                                    <span class="text-stone text-xs tracking-wider">@s.Author</span>
+                                    <span class="text-gold/40">·</span>
+                                    <span class="text-stone text-xs tracking-wider">@s.PublishedAt.ToString("MMMM d, yyyy")</span>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

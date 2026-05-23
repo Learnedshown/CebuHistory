@@ -1,0 +1,86 @@
+﻿@model Story
+@{
+    ViewData["Title"] = Model.Title; var related = ViewBag.Related as List<Story> ?? new();
+}
+
+<div class="relative h-80 md:h-[28rem] overflow-hidden">
+    <img src="@Model.CoverImage" alt="@Model.Title" class="w-full h-full object-cover" style="filter:sepia(0.25) contrast(1.08);">
+    <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent"></div>
+    <div class="absolute bottom-0 left-0 right-0 max-w-3xl mx-auto px-6 pb-10">
+        <div class="flex items-center gap-3 mb-3">
+            <span class="era-badge text-gold border-gold/60 text-[0.65rem]">@Model.Era</span>
+            <span class="era-badge text-parchment/70 border-parchment/30 text-[0.65rem]">@Model.Category</span>
+        </div>
+        <h1 class="font-display text-3xl md:text-5xl font-bold text-parchment leading-snug">@Model.Title</h1>
+    </div>
+</div>
+
+<div class="max-w-3xl mx-auto px-6 py-12">
+    <div class="ruled text-center mb-10">
+        <div class="py-3">
+            <p class="text-stone text-sm tracking-[0.15em] uppercase" style="font-family:'Cormorant Garamond',serif;">
+                By @Model.Author &nbsp;·&nbsp; @Model.PublishedAt.ToString("MMMM d, yyyy")
+            </p>
+        </div>
+    </div>
+
+    <p class="font-display text-xl md:text-2xl italic text-sienna text-center leading-relaxed mb-10 px-4 border-l-2 border-r-2 border-gold/30 py-4">
+        @Model.Excerpt
+    </p>
+
+    <div class="prose-body">
+        @{
+            var paragraphs = Model.Body.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            bool firstPara = true;
+        }
+        @foreach (var para in paragraphs)
+        {
+            if (string.IsNullOrWhiteSpace(para)) continue;
+            if (firstPara)
+            {
+                <p class="dropcap text-ink leading-relaxed mb-6 text-lg" style="font-family:'Crimson Pro',serif;font-size:1.2rem;">@para</p>
+                firstPara = false;
+            }
+            else
+            {
+                <p class="text-ink leading-relaxed mb-6" style="font-family:'Crimson Pro',serif;font-size:1.15rem;line-height:1.85;">@para</p>
+            }
+        }
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Tags))
+    {
+        <div class="mt-10 pt-6 border-t border-gold/25 flex flex-wrap gap-2 items-center">
+            <span class="text-stone text-xs tracking-widest uppercase mr-2">Tags:</span>
+            @foreach (var tag in Model.Tags.Split(','))
+            {
+                <a href="/Stories?q=@Uri.EscapeDataString(tag.Trim())" class="era-badge text-stone border-stone/30 hover:text-sienna hover:border-sienna/50 transition-colors text-[0.65rem]">@tag.Trim()</a>
+            }
+        </div>
+    }
+
+    <div class="mt-8">
+        <a href="/Stories" class="text-sienna text-sm tracking-widest uppercase hover:text-sienna-light transition-colors">← Back to Stories</a>
+    </div>
+</div>
+
+@if (related.Any())
+{
+    <section class="bg-parchment-dark border-t border-gold/20 py-14">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="font-display text-2xl font-semibold text-ink mb-8 text-center">Related Stories</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                @foreach (var s in related)
+                {
+                    <a href="/Stories/@s.Slug" class="block card-hover bg-parchment border border-gold/20 overflow-hidden">
+                        <img src="@s.CoverImage" alt="@s.Title" class="w-full h-40 object-cover img-sepia">
+                        <div class="p-5">
+                            <span class="era-badge text-sienna border-sienna/40 text-[0.6rem] mb-2 inline-block">@s.Era</span>
+                            <h3 class="font-display text-lg font-semibold text-ink leading-snug hover:text-sienna transition-colors">@s.Title</h3>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}

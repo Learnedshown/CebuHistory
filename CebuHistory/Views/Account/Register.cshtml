@@ -1,0 +1,43 @@
+﻿@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="max-w-md mx-auto px-6 py-20">
+    <div class="text-center mb-10">
+        <h1 class="font-display text-4xl font-bold text-ink mb-2">Create Account</h1>
+        <div class="ornament text-gold">— ✦ —</div>
+    </div>
+    <form asp-action="Register" asp-controller="Account" method="post" class="space-y-5">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="text-red-700 text-sm bg-red-50 border border-red-200 p-3"></div>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">First Name</label>
+                <input asp-for="FirstName" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Last Name</label>
+                <input asp-for="LastName" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            </div>
+        </div>
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Email</label>
+            <input asp-for="Email" type="email" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+        </div>
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Password</label>
+            <input asp-for="Password" type="password" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+        </div>
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">Confirm Password</label>
+            <input asp-for="ConfirmPassword" type="password" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+        </div>
+        <button type="submit" class="w-full bg-sienna hover:bg-sienna-light text-parchment py-3 text-sm tracking-widest uppercase transition-colors" style="font-family:'Cormorant Garamond',serif;">
+            Create Account
+        </button>
+        <p class="text-center text-stone text-sm" style="font-family:'Cormorant Garamond',serif;">
+            Already have an account? <a href="/Account/Login" class="text-sienna hover:underline">Sign in</a>
+        </p>
+    </form>
+</div>

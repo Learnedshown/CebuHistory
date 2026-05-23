@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " — " : "")Sugbo: Chronicles of Cebu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        parchment: { DEFAULT: '#f5efe0', dark: '#ede3cc' },
+                        ink:       { DEFAULT: '#1a1208', light: '#3d2f12' },
+                        sienna:    { DEFAULT: '#8b3a18', light: '#b0501f' },
+                        gold:      { DEFAULT: '#b5892b', light: '#d4a843' },
+                        teal:      { DEFAULT: '#1a5f5a', light: '#267870' },
+                        stone:     { DEFAULT: '#7a6e5f', light: '#9e9082' },
+                    },
+                    fontFamily: {
+                        display: ['"Playfair Display"', 'Georgia', 'serif'],
+                        body:    ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        prose:   ['"Crimson Pro"', 'Georgia', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f5efe0; color: #1a1208; }
+        .nav-link { font-family:'Cormorant Garamond',serif; font-size:0.85rem; letter-spacing:0.12em; text-transform:uppercase; color:#3d2f12; transition:color 0.2s; }
+        .nav-link:hover, .nav-link.active { color:#8b3a18; }
+        .nav-link.active { border-bottom:1px solid #8b3a18; }
+        .ornament { color:#b5892b; user-select:none; }
+        .era-badge { font-family:'Cormorant Garamond',serif; font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; padding:2px 10px; border:1px solid currentColor; }
+        .card-hover { transition:transform 0.3s ease, box-shadow 0.3s ease; }
+        .card-hover:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(26,18,8,0.15); }
+        .img-sepia { filter:sepia(0.3) contrast(1.05); transition:filter 0.4s; }
+        .img-sepia:hover { filter:sepia(0) contrast(1); }
+        .scroll-reveal { opacity:0; transform:translateY(24px); transition:opacity 0.7s ease, transform 0.7s ease; }
+        .scroll-reveal.visible { opacity:1; transform:translateY(0); }
+        .dropcap::first-letter { font-family:'Playfair Display',serif; font-size:4.5rem; font-weight:800; line-height:0.8; float:left; margin-right:0.15em; margin-top:0.08em; color:#8b3a18; }
+        .ruled::before,.ruled::after { content:''; display:block; height:1px; background:linear-gradient(to right,transparent,#b5892b80,#b5892b,#b5892b80,transparent); margin:0.5rem 0; }
+        .timeline-line { position:absolute; left:50%; top:0; bottom:0; width:1px; background:linear-gradient(to bottom,transparent,#b5892b60,#b5892b,#b5892b60,transparent); transform:translateX(-50%); }
+        @@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        .page-fade-in { animation:fadeUp 0.6s ease both; }
+    </style>
+</head>
+<body class="font-body">
+
+    <div class="bg-ink text-parchment text-center py-1.5" style="font-family:'Cormorant Garamond',serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;">
+        An open archive of Cebuano history &nbsp;·&nbsp; Est. 2024 &nbsp;·&nbsp; Free &amp; non-commercial
+    </div>
+
+    <header class="border-b border-gold/30 bg-parchment/90 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="py-5 text-center border-b border-gold/20">
+                <p class="text-stone text-xs tracking-[0.25em] uppercase mb-1" style="font-family:'Cormorant Garamond',serif;">The Living Archive of</p>
+                <a href="/" class="block">
+                    <h1 class="font-display text-5xl md:text-6xl font-bold tracking-tight text-ink leading-none">SUGBO</h1>
+                    <p class="font-display italic text-sienna text-base mt-0.5 tracking-wide">Chronicles of Cebu</p>
+                </a>
+            </div>
+            <nav class="flex items-center justify-center gap-6 py-3 flex-wrap">
+                <a href="/" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">Home</a>
+                <a href="/Stories" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Stories" ? "active" : "")">Stories</a>
+                <a href="/Gallery" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Gallery" ? "active" : "")">Gallery</a>
+                <a href="/Documents" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Documents" ? "active" : "")">Documents</a>
+                <span class="ornament text-gold/40">✦</span>
+                <a href="/Home/About" class="nav-link">About</a>
+                <span class="ornament text-gold/40">✦</span>
+                <a href="/SubmitStory" class="nav-link text-sienna">✍️ Submit Story</a>
+                <span class="ornament text-gold/40">✦</span>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    if (User.IsInRole("Admin"))
+                    {
+                        <a href="/Admin" class="nav-link text-sienna">Admin</a>
+                    }
+                    <a href="/SubmitStory/MyStories" class="nav-link">My Stories</a>
+                    <form method="post" action="/Account/Logout" class="inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="nav-link bg-transparent border-0 cursor-pointer">Logout</button>
+                    </form>
+                    <span class="text-stone text-xs" style="font-family:'Cormorant Garamond',serif;">@User.Identity.Name</span>
+                }
+                else
+                {
+                    <a href="/Account/Login" class="nav-link">Login</a>
+                    <a href="/Account/Register" class="nav-link">Register</a>
+                }
+            </nav>
+        </div>
+    </header>
+
+    <main class="min-h-screen page-fade-in">
+        @if (TempData["Success"] != null)
+        {
+            <div class="bg-teal/10 border border-teal/30 text-teal text-sm px-6 py-3 text-center" style="font-family:'Cormorant Garamond',serif;letter-spacing:0.05em;">
+                ✓ &nbsp;@TempData["Success"]
+            </div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="bg-ink text-parchment/80 mt-20">
+        <div class="max-w-6xl mx-auto px-6 py-14">
+            <div class="text-center mb-10">
+                <p class="ornament text-gold text-2xl mb-3">✦</p>
+                <h2 class="font-display text-3xl font-bold text-parchment mb-1">SUGBO</h2>
+                <p class="font-display italic text-sienna/80 text-sm">Chronicles of Cebu</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-sm border-t border-parchment/10 pt-10">
+                <div>
+                    <h4 class="text-parchment font-display font-semibold mb-3 text-base">About This Archive</h4>
+                    <p class="text-parchment/60 leading-relaxed text-sm" style="font-family:'Crimson Pro',serif;">
+                        Sugbo is a non-commercial educational archive dedicated to preserving and sharing the history of Cebu and its people.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-parchment font-display font-semibold mb-3 text-base">Navigate</h4>
+                    <ul class="space-y-1.5 text-parchment/60" style="font-family:'Cormorant Garamond',serif;font-size:0.82rem;letter-spacing:0.1em;">
+                        <li><a href="/Stories" class="hover:text-gold transition-colors">Stories &amp; Essays</a></li>
+                        <li><a href="/Gallery" class="hover:text-gold transition-colors">Photo Gallery</a></li>
+                        <li><a href="/Documents" class="hover:text-gold transition-colors">Documents &amp; Maps</a></li>
+                        <li><a href="/Home/About" class="hover:text-gold transition-colors">About the Project</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-parchment font-display font-semibold mb-3 text-base">Contribute</h4>
+                    <p class="text-parchment/60 leading-relaxed text-sm" style="font-family:'Crimson Pro',serif;">
+                        Do you have old photographs, documents, or family stories? We welcome contributions.
+                    </p>
+                    <a href="mailto:archive@sugbochronicles.ph" class="inline-block mt-3 text-gold hover:text-gold/80 text-xs tracking-widest uppercase" style="font-family:'Cormorant Garamond',serif;">
+                        archive@sugbochronicles.ph
+                    </a>
+                </div>
+            </div>
+            <div class="text-center mt-10 pt-6 border-t border-parchment/10 text-parchment/30 text-xs tracking-widest uppercase" style="font-family:'Cormorant Garamond',serif;">
+                © 2024 Sugbo: Chronicles of Cebu &nbsp;·&nbsp; Educational use only
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

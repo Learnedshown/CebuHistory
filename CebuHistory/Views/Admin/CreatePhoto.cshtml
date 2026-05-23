@@ -1,0 +1,82 @@
+﻿@model PhotoFormViewModel
+@{
+    ViewData["Title"] = "Add Photo";
+}
+
+<div class="max-w-2xl mx-auto px-6 py-12">
+    <h1 class="font-display text-3xl font-bold text-ink mb-8">Add Photo to Gallery</h1>
+
+    <form asp-action="CreatePhoto" asp-controller="Admin" method="post" enctype="multipart/form-data" class="space-y-5">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-red-700 text-sm bg-red-50 border border-red-200 p-3"></div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Title *</label>
+            <input asp-for="Title" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+        </div>
+
+        <!-- FILE UPLOAD BUTTON - NEW! -->
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Upload Image (from computer)</label>
+            <input type="file" name="ImageFile" accept="image/*" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            <p class="text-stone/60 text-xs mt-1">📸 Click "Browse" to select an image from your computer</p>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Image URL (or fallback)</label>
+            <input asp-for="ImageUrl" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" placeholder="https://..." />
+            <p class="text-stone/60 text-xs mt-1">Only needed if you don't upload a file</p>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Description</label>
+            <textarea asp-for="Description" rows="3" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Era</label>
+                <input asp-for="Era" list="era-list" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+                <datalist id="era-list">
+                    <option value="Pre-Colonial" />
+                    <option value="Spanish Colonial" />
+                    <option value="American Period" />
+                    <option value="World War II" />
+                    <option value="Modern" />
+                </datalist>
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Year</label>
+                <input asp-for="Year" type="number" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Location</label>
+                <input asp-for="Location" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Source / Attribution</label>
+                <input asp-for="Source" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Photographer</label>
+            <input asp-for="Photographer" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+        </div>
+
+        <div class="flex items-center gap-2">
+            <input asp-for="IsPublicDomain" type="checkbox" class="accent-sienna" />
+            <label asp-for="IsPublicDomain" class="text-stone text-sm">This image is in the public domain / open access</label>
+        </div>
+
+        <div class="flex gap-4 pt-2">
+            <button type="submit" class="bg-sienna text-parchment px-8 py-3 text-sm tracking-widest uppercase hover:bg-sienna-light transition-colors">
+                📤 Upload Photo
+            </button>
+            <a href="/Admin/Photos" class="text-stone text-sm tracking-widest uppercase self-center hover:text-ink">Cancel</a>
+        </div>
+    </form>
+</div>

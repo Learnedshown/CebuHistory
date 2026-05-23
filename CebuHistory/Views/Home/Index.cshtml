@@ -1,0 +1,206 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = null;
+}
+
+<!-- Hero -->
+<section class="relative overflow-hidden bg-ink py-28 md:py-40">
+    <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 20% 50%, #b5892b 0%, transparent 60%), radial-gradient(circle at 80% 20%, #8b3a18 0%, transparent 50%);"></div>
+    <div class="absolute inset-0" style="background-image:url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23b5892b\' fill-opacity=\'0.04\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+    <div class="relative max-w-4xl mx-auto px-6 text-center">
+        <p class="text-gold/70 text-xs tracking-[0.35em] uppercase mb-6" style="font-family:'Cormorant Garamond',serif;">Queen City of the South</p>
+        <h2 class="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-parchment leading-tight mb-6">
+            Discover the<br><em class="text-gold italic">Deep Past</em><br>of Cebu
+        </h2>
+        <div class="ornament text-gold text-xl mb-6">— ✦ —</div>
+        <p class="text-parchment/70 text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed mb-10" style="font-family:'Crimson Pro',serif;">
+            From the arrival of Magellan to the fires of liberation — an open archive of stories, photographs, and documents from the oldest city in the Philippines.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/Stories" class="inline-block bg-sienna hover:bg-sienna-light text-parchment px-8 py-3 text-sm tracking-[0.2em] uppercase transition-all hover:-translate-y-0.5" style="font-family:'Cormorant Garamond',serif;">
+                Read Stories
+            </a>
+            <a href="/Gallery" class="inline-block border border-gold/50 hover:border-gold text-gold hover:text-parchment px-8 py-3 text-sm tracking-[0.2em] uppercase transition-all hover:-translate-y-0.5" style="font-family:'Cormorant Garamond',serif;">
+                Browse Gallery
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Era pills -->
+<section class="bg-parchment-dark border-b border-gold/20 py-4">
+    <div class="max-w-5xl mx-auto px-6 flex flex-wrap justify-center gap-3">
+        @foreach (var era in new[] { "Pre-Colonial / Spanish Contact", "Spanish Colonial", "Revolution & American Period", "World War II", "Modern" })
+        {
+            <a href="/Stories?era=@Uri.EscapeDataString(era)" class="era-badge text-stone hover:text-sienna hover:border-sienna transition-colors">@era</a>
+        }
+    </div>
+</section>
+
+<!-- Featured stories -->
+<section class="max-w-6xl mx-auto px-6 pt-20 pb-10">
+    <div class="flex items-center gap-4 mb-10">
+        <div class="h-px flex-1 bg-gradient-to-r from-transparent to-gold/40"></div>
+        <h2 class="font-display text-3xl font-semibold text-ink text-center">Featured Stories</h2>
+        <div class="h-px flex-1 bg-gradient-to-l from-transparent to-gold/40"></div>
+    </div>
+
+    @if (Model.FeaturedStories.Any())
+    {
+        var hero = Model.FeaturedStories.First();
+        var rest = Model.FeaturedStories.Skip(1).Take(2).ToList();
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-0 mb-6 shadow-xl scroll-reveal">
+            <a href="/Stories/@hero.Slug" class="lg:col-span-3 block overflow-hidden relative group">
+                <img src="@hero.CoverImage" alt="@hero.Title" class="w-full h-72 lg:h-full object-cover img-sepia">
+                <div class="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-8">
+                    <span class="era-badge text-gold border-gold/60 text-[0.65rem] mb-3 inline-block">@hero.Era</span>
+                    <h3 class="font-display text-2xl md:text-3xl font-bold text-parchment leading-snug mb-2 group-hover:text-gold transition-colors">@hero.Title</h3>
+                    <p class="text-parchment/70 text-sm leading-relaxed line-clamp-2" style="font-family:'Crimson Pro',serif;">@hero.Excerpt</p>
+                    <p class="text-stone-light text-xs mt-3 tracking-widest uppercase" style="font-family:'Cormorant Garamond',serif;">@hero.Author &nbsp;·&nbsp; @hero.PublishedAt.ToString("MMMM d, yyyy")</p>
+                </div>
+            </a>
+            <div class="lg:col-span-2 flex flex-col divide-y divide-gold/20 bg-ink/5 border border-gold/20">
+                @foreach (var s in rest)
+                {
+                    <a href="/Stories/@s.Slug" class="block group p-0 overflow-hidden flex-1 relative">
+                        <img src="@s.CoverImage" alt="@s.Title" class="w-full h-40 object-cover img-sepia">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ink/80 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-5">
+                            <span class="era-badge text-gold/80 border-gold/40 text-[0.6rem] mb-1.5 inline-block">@s.Era</span>
+                            <h3 class="font-display text-lg font-semibold text-parchment leading-snug group-hover:text-gold transition-colors">@s.Title</h3>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</section>
+
+<!-- Latest stories grid -->
+<section class="max-w-6xl mx-auto px-6 py-10">
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="font-display text-2xl font-semibold text-ink">Latest Stories</h2>
+        <a href="/Stories" class="text-sienna hover:text-sienna-light text-sm tracking-widest uppercase transition-colors" style="font-family:'Cormorant Garamond',serif;">All Stories →</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        @foreach (var s in Model.LatestStories)
+        {
+            <a href="/Stories/@s.Slug" class="block card-hover scroll-reveal bg-parchment/60 border border-gold/20">
+                <div class="overflow-hidden">
+                    <img src="@s.CoverImage" alt="@s.Title" class="w-full h-44 object-cover img-sepia">
+                </div>
+                <div class="p-5">
+                    <span class="era-badge text-sienna border-sienna/40 text-[0.6rem] mb-2 inline-block">@s.Era</span>
+                    <h3 class="font-display text-lg font-semibold text-ink leading-snug mb-2 hover:text-sienna transition-colors">@s.Title</h3>
+                    <p class="text-stone text-sm leading-relaxed line-clamp-3" style="font-family:'Crimson Pro',serif;">@s.Excerpt</p>
+                    <div class="mt-3 pt-3 border-t border-gold/20 text-stone text-xs tracking-wider uppercase" style="font-family:'Cormorant Garamond',serif;">
+                        @s.PublishedAt.ToString("MMM yyyy")
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+</section>
+
+<!-- Timeline -->
+<section class="bg-ink py-20 mt-10">
+    <div class="max-w-4xl mx-auto px-6">
+        <div class="text-center mb-14">
+            <p class="text-gold/60 text-xs tracking-[0.3em] uppercase mb-2" style="font-family:'Cormorant Garamond',serif;">From the beginning</p>
+            <h2 class="font-display text-4xl font-bold text-parchment">Timeline of Cebu</h2>
+            <div class="ornament text-gold mt-3">— ✦ —</div>
+        </div>
+        <div class="relative">
+            <div class="timeline-line hidden md:block"></div>
+            <div class="space-y-8 md:space-y-0">
+                @{
+                    int idx = 0;
+                }
+                @foreach (var ev in Model.TimelineEvents)
+                {
+                    bool isLeft = (idx % 2 == 0);
+                    <div class="md:grid md:grid-cols-2 md:gap-10 mb-8 scroll-reveal">
+                        @if (isLeft)
+                        {
+                            <div class="md:text-right md:pr-8 py-2">
+                                <p class="font-display text-gold text-3xl font-bold">@ev.Year</p>
+                                <h4 class="font-display text-parchment text-lg font-semibold mt-1">@ev.Title</h4>
+                                <p class="text-parchment/55 text-sm mt-1 leading-relaxed" style="font-family:'Crimson Pro',serif;">@ev.Description</p>
+                            </div>
+                            <div class="hidden md:flex items-center justify-start pl-8">
+                                <div class="w-3 h-3 rounded-full bg-gold border-2 border-ink ring-2 ring-gold/40 -ml-[calc(1.5rem+1px)]"></div>
+                                <span class="era-badge text-gold/60 border-gold/30 ml-4 text-[0.6rem]">@ev.Era</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="hidden md:flex items-center justify-end pr-8">
+                                <span class="era-badge text-gold/60 border-gold/30 mr-4 text-[0.6rem]">@ev.Era</span>
+                                <div class="w-3 h-3 rounded-full bg-gold border-2 border-ink ring-2 ring-gold/40 -mr-[calc(1.5rem+1px)]"></div>
+                            </div>
+                            <div class="md:pl-8 py-2">
+                                <p class="font-display text-gold text-3xl font-bold">@ev.Year</p>
+                                <h4 class="font-display text-parchment text-lg font-semibold mt-1">@ev.Title</h4>
+                                <p class="text-parchment/55 text-sm mt-1 leading-relaxed" style="font-family:'Crimson Pro',serif;">@ev.Description</p>
+                            </div>
+                        }
+                    </div>
+                    idx++;
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gallery preview -->
+<section class="max-w-6xl mx-auto px-6 py-16">
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="font-display text-2xl font-semibold text-ink">From the Archive</h2>
+        <a href="/Gallery" class="text-sienna hover:text-sienna-light text-sm tracking-widest uppercase transition-colors" style="font-family:'Cormorant Garamond',serif;">Full Gallery →</a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        @foreach (var p in Model.RecentPhotos)
+        {
+            <div class="group relative overflow-hidden scroll-reveal cursor-pointer" style="aspect-ratio:3/4;">
+                <img src="@p.ImageUrl" alt="@p.Title" class="w-full h-full object-cover img-sepia group-hover:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-ink/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                    <p class="font-display text-parchment text-sm font-semibold leading-snug">@p.Title</p>
+                    @if (p.Year.HasValue)
+                    {
+                        <p class="text-gold text-xs mt-1" style="font-family:'Cormorant Garamond',serif;">@p.Year</p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Documents preview -->
+<section class="bg-parchment-dark border-t border-b border-gold/20 py-16">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="font-display text-2xl font-semibold text-ink">Primary Documents</h2>
+            <a href="/Documents" class="text-sienna hover:text-sienna-light text-sm tracking-widest uppercase transition-colors" style="font-family:'Cormorant Garamond',serif;">All Documents →</a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            @foreach (var d in Model.RecentDocuments)
+            {
+                <div class="bg-parchment border border-gold/25 p-5 card-hover scroll-reveal">
+                    <div class="text-center mb-3">
+                        <span class="text-4xl">📜</span>
+                    </div>
+                    <span class="era-badge text-teal border-teal/40 text-[0.6rem] mb-2 inline-block">@d.DocumentType</span>
+                    <h4 class="font-display text-base font-semibold text-ink leading-snug mb-1">@d.Title</h4>
+                    @if (d.Year.HasValue)
+                    {
+                        <p class="text-gold text-xs font-semibold mb-2" style="font-family:'Cormorant Garamond',serif;">@d.Year</p>
+                    }
+                    <p class="text-stone text-xs leading-relaxed line-clamp-2" style="font-family:'Crimson Pro',serif;">@d.Description</p>
+                    <a href="/Documents" class="inline-block mt-3 text-sienna text-xs tracking-widest uppercase hover:text-sienna-light transition-colors" style="font-family:'Cormorant Garamond',serif;">View →</a>
+                </div>
+            }
+        </div>
+    </div>
+</section>

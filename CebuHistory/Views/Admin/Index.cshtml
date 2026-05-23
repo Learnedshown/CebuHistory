@@ -1,0 +1,113 @@
+﻿@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="mb-10">
+        <h1 class="font-display text-4xl font-bold text-ink">Admin Dashboard</h1>
+        <p class="text-stone mt-1" style="font-family:'Crimson Pro',serif;">Manage stories, photos, documents and users.</p>
+    </div>
+
+    <!-- Stats Cards - Added Pending Stories card -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-5 mb-12">
+        @foreach (var (label, count, href, color) in new[]{
+                ("Stories",   Model.TotalStories,   "/Admin/Stories",   "sienna"),
+                ("Photos",    Model.TotalPhotos,    "/Admin/Photos",    "gold"),
+                ("Documents", Model.TotalDocuments, "/Admin/Documents", "teal"),
+                ("Users",     Model.TotalUsers,     "/Admin/Users",     "stone"),
+                ("Pending",   Model.PendingStories, "/Admin/PendingStories", "amber"),
+                })
+        {
+            <a href="@href" class="bg-parchment border border-gold/25 p-6 card-hover block text-center">
+                <p class="font-display text-4xl font-bold @(color == "amber" ? "text-amber-600" : "text-ink")">@count</p>
+                <p class="text-stone text-xs tracking-widest uppercase mt-1" style="font-family:'Cormorant Garamond',serif;">@label</p>
+            </a>
+        }
+    </div>
+
+    <!-- Quick Actions - Added Review Pending and All Stories buttons -->
+    <div class="flex items-center gap-4 mb-6">
+        <h2 class="font-display text-2xl font-semibold text-ink">Quick Actions</h2>
+    </div>
+    <div class="flex flex-wrap gap-3 mb-12">
+        <a href="/Admin/CreateStory" class="bg-sienna text-parchment px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-sienna-light transition-colors" style="font-family:'Cormorant Garamond',serif;">+ New Story</a>
+        <a href="/Admin/CreatePhoto" class="bg-gold text-ink px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-gold-light transition-colors" style="font-family:'Cormorant Garamond',serif;">+ New Photo</a>
+        <a href="/Admin/CreateDocument" class="bg-teal text-parchment px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-teal-light transition-colors" style="font-family:'Cormorant Garamond',serif;">+ New Document</a>
+
+        @if (Model.PendingStories > 0)
+        {
+            <a href="/Admin/PendingStories" class="bg-amber-600 text-white px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-amber-700 transition-colors" style="font-family:'Cormorant Garamond',serif;">
+                ⏳ Review Pending (@Model.PendingStories)
+            </a>
+        }
+        else
+        {
+            <a href="/Admin/PendingStories" class="bg-stone/50 text-stone px-5 py-2.5 text-xs tracking-widest uppercase" style="font-family:'Cormorant Garamond',serif;">
+                ✅ No Pending Stories
+            </a>
+        }
+
+        <a href="/Admin/AllStories" class="bg-stone text-parchment px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-stone-light transition-colors" style="font-family:'Cormorant Garamond',serif;">
+            📋 All Stories
+        </a>
+    </div>
+
+    <!-- Recent Submissions (Pending Stories) -->
+    @if (Model.RecentSubmissions != null && Model.RecentSubmissions.Any())
+    {
+        <h2 class="font-display text-2xl font-semibold text-ink mb-4">Awaiting Approval</h2>
+        <div class="bg-amber-50 border border-amber-200 divide-y divide-amber-100 mb-8">
+            @foreach (var s in Model.RecentSubmissions.Take(5))
+            {
+                <div class="flex items-center justify-between px-5 py-3">
+                    <div>
+                        <p class="font-display text-base font-semibold text-ink">@s.Title</p>
+                        <p class="text-stone text-xs mt-0.5" style="font-family:'Cormorant Garamond',serif;">
+                            Submitted by: @(s.SubmittedByName ?? "Anonymous") &nbsp;·&nbsp;
+                            @(s.SubmittedAt?.ToString("MMM d, yyyy") ?? "Unknown date") &nbsp;·&nbsp;
+                            @s.Era
+                        </p>
+                    </div>
+                    <div class="flex gap-3">
+                        <a href="/Admin/PendingStories" class="text-amber-600 text-xs tracking-widest uppercase hover:underline" style="font-family:'Cormorant Garamond',serif;">Review →</a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Recent Stories -->
+    <h2 class="font-display text-2xl font-semibold text-ink mb-4">Recent Stories</h2>
+    <div class="bg-parchment border border-gold/20 divide-y divide-gold/15">
+        @foreach (var s in Model.RecentStories)
+        {
+            var statusColor = s.Status == "Pending" ? "text-amber-600" : (s.Status == "Published" ? "text-green-600" : "text-red-600");
+
+            <div class="flex items-center justify-between px-5 py-3">
+                <div>
+                    <p class="font-display text-base font-semibold text-ink">@s.Title</p>
+                    <p class="text-stone text-xs mt-0.5" style="font-family:'Cormorant Garamond',serif;">
+                        @s.Era &nbsp;·&nbsp;
+                        <span class="@statusColor font-semibold">@s.Status</span>
+                        &nbsp;·&nbsp; @s.CreatedAt.ToString("MMM d, yyyy")
+                    </p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="/Admin/EditStory/@s.Id" class="text-teal text-xs tracking-widest uppercase hover:underline" style="font-family:'Cormorant Garamond',serif;">Edit</a>
+                    <form method="post" action="/Admin/DeleteStory/@s.Id" onsubmit="return confirm('Delete this story?')">
+                        @Html.AntiForgeryToken()
+                        <button class="text-red-600 text-xs tracking-widest uppercase hover:underline" style="font-family:'Cormorant Garamond',serif;">Delete</button>
+                    </form>
+                </div>
+            </div>
+        }
+
+        @if (!Model.RecentStories.Any())
+        {
+            <div class="px-5 py-8 text-center text-stone">
+                <p style="font-family:'Crimson Pro',serif;">No stories yet. Click "+ New Story" to create one.</p>
+            </div>
+        }
+    </div>
+</div>

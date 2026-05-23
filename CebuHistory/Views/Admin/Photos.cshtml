@@ -1,0 +1,31 @@
+﻿@model List<CebuHistory.Models.Photo>
+@{
+    ViewData["Title"] = "Manage Photos";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="font-display text-3xl font-bold text-ink">Photos</h1>
+        <a href="/Admin/CreatePhoto" class="bg-gold text-ink px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-gold-light transition-colors" style="font-family:'Cormorant Garamond',serif;">+ New Photo</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        @foreach (var p in Model)
+        {
+            <div class="flex gap-4 bg-parchment border border-gold/20 p-4">
+                <img src="@p.ImageUrl" alt="@p.Title" class="w-20 h-20 object-cover img-sepia flex-shrink-0" onerror="this.src=''" />
+                <div class="flex-1 min-w-0">
+                    <p class="font-display font-semibold text-ink truncate">@p.Title</p>
+                    <p class="text-stone text-xs mt-0.5" style="font-family:'Cormorant Garamond',serif;">@p.Era @(p.Year.HasValue ? "· " + p.Year : "") · @p.Location</p>
+                    <div class="flex gap-3 mt-2">
+                        <a href="/Admin/EditPhoto/@p.Id" class="text-teal text-xs tracking-widest uppercase hover:underline" style="font-family:'Cormorant Garamond',serif;">Edit</a>
+                        <form method="post" action="/Admin/DeletePhoto/@p.Id" onsubmit="return confirm('Delete this photo?')">
+                            @Html.AntiForgeryToken()
+                            <button class="text-red-600 text-xs tracking-widest uppercase hover:underline" style="font-family:'Cormorant Garamond',serif;">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="mt-4"><a href="/Admin" class="text-sienna text-sm tracking-widest uppercase hover:underline">← Dashboard</a></div>
+</div>

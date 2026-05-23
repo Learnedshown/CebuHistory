@@ -1,0 +1,35 @@
+﻿@model List<CebuHistory.Models.Story>
+@{
+    ViewData["Title"] = "Manage Stories";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="font-display text-3xl font-bold text-ink">Stories</h1>
+        <a href="/Admin/CreateStory" class="bg-sienna text-parchment px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-sienna-light transition-colors" style="font-family:'Cormorant Garamond',serif;">+ New Story</a>
+    </div>
+    <div class="bg-parchment border border-gold/20 divide-y divide-gold/15">
+        @foreach (var s in Model)
+        {
+            <div class="flex items-center justify-between px-5 py-4">
+                <div class="flex-1 min-w-0 pr-6">
+                    <p class="font-display font-semibold text-ink truncate">@s.Title</p>
+                    <p class="text-stone text-xs mt-0.5" style="font-family:'Cormorant Garamond',serif;">
+                        @s.Era &nbsp;·&nbsp;
+                        <span class="@(s.Status == "Published" ? "text-teal" : "text-gold")">@s.Status</span>
+                        &nbsp;·&nbsp; @s.PublishedAt.ToString("MMM d, yyyy") &nbsp;·&nbsp; @s.Views views
+                    </p>
+                </div>
+                <div class="flex gap-4 flex-shrink-0">
+                    <a href="/stories/@s.Slug" target="_blank" class="text-stone text-xs tracking-widest uppercase hover:text-ink" style="font-family:'Cormorant Garamond',serif;">View</a>
+                    <a href="/Admin/EditStory/@s.Id" class="text-teal text-xs tracking-widest uppercase hover:underline" style="font-family:'Cormorant Garamond',serif;">Edit</a>
+                    <form method="post" action="/Admin/DeleteStory/@s.Id" onsubmit="return confirm('Delete this story?')">
+                        @Html.AntiForgeryToken()
+                        <button class="text-red-600 text-xs tracking-widest uppercase hover:underline" style="font-family:'Cormorant Garamond',serif;">Delete</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="mt-4"><a href="/Admin" class="text-sienna text-sm tracking-widest uppercase hover:underline">← Dashboard</a></div>
+</div>

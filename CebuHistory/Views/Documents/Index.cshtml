@@ -1,0 +1,65 @@
+﻿@model DocumentsViewModel
+@{
+    ViewData["Title"] = "Documents";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-14">
+    <div class="text-center mb-12">
+        <p class="text-stone text-xs tracking-[0.3em] uppercase mb-2" style="font-family:'Cormorant Garamond',serif;">Primary sources &amp; open archives</p>
+        <h1 class="font-display text-5xl font-bold text-ink mb-3">Documents</h1>
+        <div class="ornament text-gold">— ✦ —</div>
+        <p class="text-stone text-lg mt-4 max-w-xl mx-auto" style="font-family:'Crimson Pro',serif;">
+            Maps, decrees, chronicles, and records — the paper trail of Cebu's long history.
+        </p>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-3 mb-10">
+        <a href="/Documents" class="era-badge @(string.IsNullOrEmpty(Model.ActiveType) ? "text-teal border-teal bg-teal/10" : "text-stone border-stone/40 hover:text-teal hover:border-teal") transition-colors">All</a>
+        @foreach (var type in Model.Types)
+        {
+            <a href="/Documents?type=@Uri.EscapeDataString(type)" class="era-badge @(Model.ActiveType == type ? "text-teal border-teal bg-teal/10" : "text-stone border-stone/40 hover:text-teal hover:border-teal") transition-colors">@type</a>
+        }
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        @foreach (var doc in Model.Documents)
+        {
+            <div class="flex gap-5 bg-parchment border border-gold/20 p-6 card-hover scroll-reveal">
+                <div class="flex-shrink-0 w-20 h-24 bg-parchment-dark border border-gold/30 flex items-center justify-center text-4xl overflow-hidden">
+                    @if (!string.IsNullOrEmpty(doc.ThumbnailUrl))
+                    {
+                        <img src="@doc.ThumbnailUrl" alt="" class="w-full h-full object-cover img-sepia" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <span style="display:none">📜</span>
+                    }
+                    else
+                    {
+                        <span>📜</span>
+                    }
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <span class="era-badge text-teal border-teal/40 text-[0.6rem]">@doc.DocumentType</span>
+                        @if (doc.Year.HasValue)
+                        {
+                            <span class="text-gold font-semibold text-sm" style="font-family:'Playfair Display',serif;">@doc.Year</span>
+                        }
+                    </div>
+                    <h3 class="font-display text-lg font-semibold text-ink leading-snug mb-1">@doc.Title</h3>
+                    <p class="text-stone text-xs leading-relaxed mb-2" style="font-family:'Crimson Pro',serif;line-height:1.6;">@doc.Description</p>
+                    <div class="flex items-center justify-between mt-3 pt-2 border-t border-gold/20">
+                        <p class="text-stone/60 text-[0.65rem] tracking-wide uppercase" style="font-family:'Cormorant Garamond',serif;">@doc.Source</p>
+                        <a href="@doc.DocumentUrl" class="text-sienna text-xs tracking-widest uppercase hover:text-sienna-light transition-colors" style="font-family:'Cormorant Garamond',serif;">View →</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Documents.Any())
+    {
+        <div class="text-center py-20 text-stone">
+            <p class="font-display text-3xl">No documents found</p>
+            <a href="/Documents" class="inline-block mt-4 text-sienna text-sm tracking-widest uppercase">Clear filter</a>
+        </div>
+    }
+</div>
