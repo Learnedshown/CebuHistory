@@ -15,7 +15,7 @@ public class Story
     public string? AuthorId { get; set; }
     [MaxLength(100)] public string Era { get; set; } = string.Empty;
     [MaxLength(100)] public string Category { get; set; } = string.Empty;
-    public string CoverImage { get; set; } = string.Empty;
+    public string? CoverImage { get; set; } = string.Empty;
     public DateTime PublishedAt { get; set; }
     public bool IsFeatured { get; set; }
     public int Views { get; set; } = 0;

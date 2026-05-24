@@ -99,8 +99,21 @@
     <main class="min-h-screen page-fade-in">
         @if (TempData["Success"] != null)
         {
-            <div class="bg-teal/10 border border-teal/30 text-teal text-sm px-6 py-3 text-center" style="font-family:'Cormorant Garamond',serif;letter-spacing:0.05em;">
+            <div id="temp-success" class="bg-teal/10 border border-teal/30 text-teal text-sm px-6 py-3 text-center" style="font-family:'Cormorant Garamond',serif;letter-spacing:0.05em;">
                 ✓ &nbsp;@TempData["Success"]
+            </div>
+        }
+        @if (TempData["Errors"] != null)
+        {
+            var errors = TempData["Errors"]!.ToString()!.Split("|");
+
+            <div id="temp-error"  class="bg-red-100 border border-red-400 text-red-700 px-6 py-3  text-center rounded mb-4" tyle="font-family:'Cormorant Garamond',serif;letter-spacing:0.05em;">
+                <ul class="list-disc list-inside">
+                    @foreach (var error in errors)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
             </div>
         }
         @RenderBody()
@@ -150,6 +163,15 @@
             entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
         }, { threshold: 0.1 });
         document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+        
+        setTimeout(function () {
+            const error = document.getElementById("temp-error");
+            const success = document.getElementById("temp-success");
+
+            if (error) error.remove();
+            if (success) success.remove();
+        }, 3000);
+    
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -60,10 +60,10 @@ public class StoryFormViewModel
     [Required, MaxLength(200)] public string Title { get; set; } = string.Empty;
     [MaxLength(500)] public string Excerpt { get; set; } = string.Empty;
     [Required] public string Body { get; set; } = string.Empty;
-    [MaxLength(100)] public string Author { get; set; } = string.Empty;
+    [MaxLength(100)] public string? Author { get; set; } = string.Empty;
     [MaxLength(100)] public string Era { get; set; } = string.Empty;
     [MaxLength(100)] public string Category { get; set; } = string.Empty;
-    public string CoverImage { get; set; } = string.Empty;
+    public string? CoverImage { get; set; } = string.Empty;
     public bool IsFeatured { get; set; }
     public string Status { get; set; } = "Published";
     public string Tags { get; set; } = string.Empty;
@@ -75,7 +75,7 @@ public class PhotoFormViewModel
     public int Id { get; set; }
     [Required, MaxLength(200)] public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    [Required] public string ImageUrl { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; } = string.Empty;
     [MaxLength(100)] public string Era { get; set; } = string.Empty;
     public int? Year { get; set; }
     [MaxLength(200)] public string Source { get; set; } = string.Empty;
@@ -119,10 +119,10 @@ public class SubmitStoryViewModel
     public string Title { get; set; } = "";
     public string Excerpt { get; set; } = "";
     public string Body { get; set; } = "";
-    public string Author { get; set; } = "";
+    public string? Author { get; set; } = "";
     public string Era { get; set; } = "";
     public string Category { get; set; } = "";
-    public string CoverImage { get; set; } = "";
+    public string? CoverImage { get; set; } = "";
     public string Tags { get; set; } = "";
     public string SubmitterName { get; set; } = "";
 }
@@ -133,10 +133,10 @@ public class EditStoryViewModel
     public string Title { get; set; } = "";
     public string Excerpt { get; set; } = "";
     public string Body { get; set; } = "";
-    public string Author { get; set; } = "";
+    public string? Author { get; set; } = "";
     public string Era { get; set; } = "";
     public string Category { get; set; } = "";
-    public string CoverImage { get; set; } = "";
+    public string? CoverImage { get; set; } = "";
     public string Tags { get; set; } = "";
     public string? RejectionReason { get; set; }
 }

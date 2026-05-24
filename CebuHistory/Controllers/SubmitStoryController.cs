@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CebuHistory.Data;
+using CebuHistory.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CebuHistory.Data;
-using CebuHistory.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CebuHistory.Controllers;
 
@@ -33,8 +34,13 @@ public class SubmitStoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Index(SubmitStoryViewModel vm, IFormFile? ImageFile)  // ADDED ImageFile parameter
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid) {
+            TempData["Errors"] = string.Join("|",ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage));
             return View(vm);
+        }
+
 
         var userId = User.Identity?.IsAuthenticated == true
             ? _userManager.GetUserId(User)

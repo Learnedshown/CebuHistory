@@ -60,7 +60,14 @@ public class AdminController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateStory(StoryFormViewModel vm, IFormFile? CoverImageFile)
     {
-        if (!ModelState.IsValid) return View(vm);
+
+        if (!ModelState.IsValid)
+        {
+            TempData["Errors"] = string.Join("|", ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage));
+            return View(vm);
+        }
 
         var coverImageUrl = vm.CoverImage;
         if (CoverImageFile != null && CoverImageFile.Length > 0)
@@ -166,12 +173,20 @@ public class AdminController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> CreatePhoto(PhotoFormViewModel vm, IFormFile? ImageFile)
     {
-        if (!ModelState.IsValid) return View(vm);
+        
 
         var imageUrl = vm.ImageUrl;
         if (ImageFile != null && ImageFile.Length > 0)
         {
             imageUrl = await SaveUploadedFile(ImageFile, "photos");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            TempData["Errors"] = string.Join("|", ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage));
+            return View(vm);
         }
 
         _db.Photos.Add(new Photo
@@ -215,7 +230,14 @@ public class AdminController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> EditPhoto(int id, PhotoFormViewModel vm, IFormFile? ImageFile)
     {
-        if (!ModelState.IsValid) return View(vm);
+
+        if (!ModelState.IsValid)
+        {
+            TempData["Errors"] = string.Join("|", ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage));
+            return View(vm);
+        }
         var p = await _db.Photos.FindAsync(id);
         if (p == null) return NotFound();
 
@@ -261,7 +283,14 @@ public class AdminController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateDocument(DocumentFormViewModel vm, IFormFile? DocumentFile, IFormFile? ThumbnailFile)
     {
-        if (!ModelState.IsValid) return View(vm);
+
+        if (!ModelState.IsValid)
+        {
+            TempData["Errors"] = string.Join("|", ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage));
+            return View(vm);
+        }
 
         var documentUrl = vm.DocumentUrl;
         if (DocumentFile != null && DocumentFile.Length > 0)
@@ -314,7 +343,14 @@ public class AdminController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> EditDocument(int id, DocumentFormViewModel vm, IFormFile? DocumentFile, IFormFile? ThumbnailFile)
     {
-        if (!ModelState.IsValid) return View(vm);
+
+        if (!ModelState.IsValid)
+        {
+            TempData["Errors"] = string.Join("|", ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage));
+            return View(vm);
+        }
         var d = await _db.Documents.FindAsync(id);
         if (d == null) return NotFound();
 
