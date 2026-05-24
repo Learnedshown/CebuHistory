@@ -9,24 +9,35 @@
         <p class="text-stone mt-1" style="font-family:'Crimson Pro',serif;">Manage stories, photos, documents and users.</p>
     </div>
 
-    <!-- Stats Cards - Added Pending Stories card -->
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-5 mb-12">
-        @foreach (var (label, count, href, color) in new[]{
-                ("Stories",   Model.TotalStories,   "/Admin/Stories",   "sienna"),
-                ("Photos",    Model.TotalPhotos,    "/Admin/Photos",    "gold"),
-                ("Documents", Model.TotalDocuments, "/Admin/Documents", "teal"),
-                ("Users",     Model.TotalUsers,     "/Admin/Users",     "stone"),
-                ("Pending",   Model.PendingStories, "/Admin/PendingStories", "amber"),
-                })
-        {
-            <a href="@href" class="bg-parchment border border-gold/25 p-6 card-hover block text-center">
-                <p class="font-display text-4xl font-bold @(color == "amber" ? "text-amber-600" : "text-ink")">@count</p>
-                <p class="text-stone text-xs tracking-widest uppercase mt-1" style="font-family:'Cormorant Garamond',serif;">@label</p>
-            </a>
-        }
+    <!-- Stats Cards - Added all Pending cards -->
+    <div class="grid grid-cols-2 md:grid-cols-6 gap-5 mb-12">
+        <a href="/Admin/Stories" class="bg-parchment border border-gold/25 p-6 card-hover block text-center">
+            <p class="font-display text-4xl font-bold text-ink">@Model.TotalStories</p>
+            <p class="text-stone text-xs tracking-widest uppercase mt-1" style="font-family:'Cormorant Garamond',serif;">Stories</p>
+        </a>
+        <a href="/Admin/Photos" class="bg-parchment border border-gold/25 p-6 card-hover block text-center">
+            <p class="font-display text-4xl font-bold text-ink">@Model.TotalPhotos</p>
+            <p class="text-stone text-xs tracking-widest uppercase mt-1" style="font-family:'Cormorant Garamond',serif;">Photos</p>
+        </a>
+        <a href="/Admin/Documents" class="bg-parchment border border-gold/25 p-6 card-hover block text-center">
+            <p class="font-display text-4xl font-bold text-ink">@Model.TotalDocuments</p>
+            <p class="text-stone text-xs tracking-widest uppercase mt-1" style="font-family:'Cormorant Garamond',serif;">Documents</p>
+        </a>
+        <a href="/Admin/Users" class="bg-parchment border border-gold/25 p-6 card-hover block text-center">
+            <p class="font-display text-4xl font-bold text-ink">@Model.TotalUsers</p>
+            <p class="text-stone text-xs tracking-widest uppercase mt-1" style="font-family:'Cormorant Garamond',serif;">Users</p>
+        </a>
+        <a href="/Admin/PendingStories" class="bg-parchment border border-gold/25 p-6 card-hover block text-center">
+            <p class="font-display text-4xl font-bold text-amber-600">@Model.PendingStories</p>
+            <p class="text-stone text-xs tracking-widest uppercase mt-1" style="font-family:'Cormorant Garamond',serif;">Pending Stories</p>
+        </a>
+        <a href="/Admin/PendingPhotos" class="bg-parchment border border-gold/25 p-6 card-hover block text-center">
+            <p class="font-display text-4xl font-bold text-purple-600">@Model.PendingPhotos</p>
+            <p class="text-stone text-xs tracking-widest uppercase mt-1" style="font-family:'Cormorant Garamond',serif;">Pending Photos</p>
+        </a>
     </div>
 
-    <!-- Quick Actions - Added Review Pending and All Stories buttons -->
+    <!-- Quick Actions - All Pending buttons -->
     <div class="flex items-center gap-4 mb-6">
         <h2 class="font-display text-2xl font-semibold text-ink">Quick Actions</h2>
     </div>
@@ -35,16 +46,45 @@
         <a href="/Admin/CreatePhoto" class="bg-gold text-ink px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-gold-light transition-colors" style="font-family:'Cormorant Garamond',serif;">+ New Photo</a>
         <a href="/Admin/CreateDocument" class="bg-teal text-parchment px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-teal-light transition-colors" style="font-family:'Cormorant Garamond',serif;">+ New Document</a>
 
+        <!-- Pending Stories Button -->
         @if (Model.PendingStories > 0)
         {
             <a href="/Admin/PendingStories" class="bg-amber-600 text-white px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-amber-700 transition-colors" style="font-family:'Cormorant Garamond',serif;">
-                ⏳ Review Pending (@Model.PendingStories)
+                ⏳ Review Stories (@Model.PendingStories)
             </a>
         }
         else
         {
             <a href="/Admin/PendingStories" class="bg-stone/50 text-stone px-5 py-2.5 text-xs tracking-widest uppercase" style="font-family:'Cormorant Garamond',serif;">
                 ✅ No Pending Stories
+            </a>
+        }
+
+        <!-- Pending Photos Button -->
+        @if (Model.PendingPhotos > 0)
+        {
+            <a href="/Admin/PendingPhotos" class="bg-purple-600 text-white px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-purple-700 transition-colors" style="font-family:'Cormorant Garamond',serif;">
+                🖼️ Review Photos (@Model.PendingPhotos)
+            </a>
+        }
+        else
+        {
+            <a href="/Admin/PendingPhotos" class="bg-stone/50 text-stone px-5 py-2.5 text-xs tracking-widest uppercase" style="font-family:'Cormorant Garamond',serif;">
+                ✅ No Pending Photos
+            </a>
+        }
+
+        <!-- Pending Documents Button -->
+        @if (Model.PendingDocuments > 0)
+        {
+            <a href="/Admin/PendingDocuments" class="bg-indigo-600 text-white px-5 py-2.5 text-xs tracking-widest uppercase hover:bg-indigo-700 transition-colors" style="font-family:'Cormorant Garamond',serif;">
+                📄 Review Documents (@Model.PendingDocuments)
+            </a>
+        }
+        else
+        {
+            <a href="/Admin/PendingDocuments" class="bg-stone/50 text-stone px-5 py-2.5 text-xs tracking-widest uppercase" style="font-family:'Cormorant Garamond',serif;">
+                ✅ No Pending Documents
             </a>
         }
 
@@ -56,7 +96,7 @@
     <!-- Recent Submissions (Pending Stories) -->
     @if (Model.RecentSubmissions != null && Model.RecentSubmissions.Any())
     {
-        <h2 class="font-display text-2xl font-semibold text-ink mb-4">Awaiting Approval</h2>
+        <h2 class="font-display text-2xl font-semibold text-ink mb-4">Awaiting Approval - Stories</h2>
         <div class="bg-amber-50 border border-amber-200 divide-y divide-amber-100 mb-8">
             @foreach (var s in Model.RecentSubmissions.Take(5))
             {

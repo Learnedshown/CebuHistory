@@ -1,0 +1,87 @@
+﻿@model List<HistoricalDocument>
+@{
+    ViewData["Title"] = "My Documents";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="font-['Playfair_Display'] text-3xl font-bold">My Documents</h1>
+        <a href="/SubmitDocument" class="bg-[#8b3a18] text-white px-4 py-2 text-sm rounded hover:bg-[#b0501f]">+ New Document</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+            @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-12 bg-gray-50">
+            <p class="text-gray-500">You haven't submitted any documents yet.</p>
+            <a href="/SubmitDocument" class="inline-block mt-4 text-[#8b3a18]">Submit your first document →</a>
+        </div>
+    }
+    else
+    {
+        <div class="space-y-4">
+            @foreach (var doc in Model)
+            {
+                var statusColor = doc.Status switch
+                {
+                    "Pending" => "bg-yellow-100 text-yellow-800",
+                    "Published" => "bg-green-100 text-green-800",
+                    "Rejected" => "bg-red-100 text-red-800",
+                    _ => "bg-gray-100 text-gray-800"
+                };
+
+                <div class="border p-5 bg-white rounded-lg">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2 flex-wrap">
+                                <span class="text-xs px-2 py-1 rounded @statusColor">@doc.Status</span>
+                                <span class="text-xs bg-gray-100 px-2 py-1 rounded">@doc.DocumentType</span>
+                                @if (doc.Status == "Rejected" && !string.IsNullOrEmpty(doc.RejectionReason))
+                                {
+                                    <span class="text-xs text-red-600">Reason: @doc.RejectionReason</span>
+                                }
+                            </div>
+                            <h2 class="font-['Playfair_Display'] text-xl font-bold">@doc.Title</h2>
+                            <p class="text-gray-600 text-sm mt-1">Submitted: @doc.SubmittedAt?.ToString("MMM dd, yyyy")</p>
+                            <p class="text-gray-500 mt-1">@doc.Description</p>
+                            <div class="flex gap-3 mt-2 text-sm text-gray-500">
+                                <span>📂 @doc.Era</span>
+                                @if (doc.Year.HasValue)
+                                {
+                                    <span>📅 @doc.Year</span>
+                                }
+                                <span>🔗 @doc.Source</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 ml-4">
+                            @if (doc.Status == "Pending" || doc.Status == "Rejected")
+                            {
+                                <a href="/SubmitDocument/EditDocument/@doc.Id" class="text-blue-600 text-sm">Edit</a>
+                                <form method="post" asp-action="DeleteDocument" asp-route-id="@doc.Id" class="inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="text-red-600 text-sm" onclick="return confirm('Delete this document?')">Delete</button>
+                                </form>
+                            }
+                            else if (doc.Status == "Published")
+                            {
+                                <a href="/Documents" class="text-green-600 text-sm">View in Archive</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

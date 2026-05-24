@@ -1,0 +1,96 @@
+﻿@model SubmitDocumentViewModel
+@{
+    ViewData["Title"] = "Submit a Document";
+}
+
+<div class="max-w-2xl mx-auto px-6 py-12">
+    <h1 class="font-['Playfair_Display'] text-4xl text-center mb-4">Share a Document</h1>
+    <div class="text-center mb-8">— ✦ —</div>
+
+    <p class="text-center text-gray-600 mb-8">
+        Do you have a historical document, map, or letter about Cebu?<br />
+        Submit it below. Our admin will review and publish it if approved.
+    </p>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+            @TempData["Success"]
+        </div>
+    }
+
+    <form method="post" enctype="multipart/form-data" class="space-y-5">
+        @Html.AntiForgeryToken()
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Document Title *</label>
+            <input asp-for="Title" class="w-full bg-white border border-gold/30 px-4 py-2.5" required />
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Description</label>
+            <textarea asp-for="Description" rows="3" class="w-full bg-white border border-gold/30 px-4 py-2.5"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Document Type</label>
+                <select asp-for="DocumentType" class="w-full bg-white border border-gold/30 px-4 py-2.5">
+                    <option value="">Select type...</option>
+                    <option>Chronicle</option>
+                    <option>Map</option>
+                    <option>Decree</option>
+                    <option>Proclamation</option>
+                    <option>Letter</option>
+                    <option>Manuscript</option>
+                    <option>Photograph</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Era</label>
+                <select asp-for="Era" class="w-full bg-white border border-gold/30 px-4 py-2.5">
+                    <option value="">Select era...</option>
+                    <option>Spanish Colonial</option>
+                    <option>American Period</option>
+                    <option>World War II</option>
+                    <option>Modern</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Year</label>
+                <input asp-for="Year" type="number" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Source</label>
+                <input asp-for="Source" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+            </div>
+        </div>
+
+        <!-- File Upload -->
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">📄 Upload Document (PDF, Image)</label>
+            <input type="file" name="DocumentFile" accept=".pdf,.jpg,.png,.gif" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+            <p class="text-xs text-gray-400 mt-1">Upload PDF or image file</p>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">🔗 Document URL (or fallback)</label>
+            <input asp-for="DocumentUrl" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5" placeholder="https://..." />
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">🖼️ Thumbnail URL (optional)</label>
+            <input asp-for="ThumbnailUrl" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5" placeholder="https://..." />
+        </div>
+
+        <div class="flex gap-4 pt-4">
+            <button type="submit" class="bg-[#8b3a18] text-white px-8 py-3 text-sm tracking-widest uppercase hover:bg-[#b0501f] transition-colors">
+                📤 Submit for Review
+            </button>
+            <a href="/" class="text-stone text-sm tracking-widest uppercase self-center hover:text-ink">Cancel</a>
+        </div>
+    </form>
+</div>

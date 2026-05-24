@@ -24,7 +24,9 @@ public class AdminController : Controller
     // ── Dashboard ──────────────────────────────────────────────
     public async Task<IActionResult> Index()
     {
-        var pendingCount = await _db.Stories.CountAsync(s => s.Status == "Pending");
+        var pendingStoriesCount = await _db.Stories.CountAsync(s => s.Status == "Pending");
+        var pendingPhotosCount = await _db.Photos.CountAsync(p => p.Status == "Pending");
+        var pendingDocumentsCount = await _db.Documents.CountAsync(d => d.Status == "Pending");
         var publishedCount = await _db.Stories.CountAsync(s => s.Status == "Published");
         var rejectedCount = await _db.Stories.CountAsync(s => s.Status == "Rejected");
 
@@ -42,7 +44,9 @@ public class AdminController : Controller
             TotalDocuments = await _db.Documents.CountAsync(),
             TotalUsers = await _users.Users.CountAsync(),
             RecentStories = await _db.Stories.OrderByDescending(s => s.CreatedAt).Take(5).ToListAsync(),
-            PendingStories = pendingCount,
+            PendingStories = pendingStoriesCount,
+            PendingPhotos = pendingPhotosCount,
+            PendingDocuments = pendingDocumentsCount,
             ApprovedStories = publishedCount,
             RejectedStories = rejectedCount,
             RecentSubmissions = recentSubmissions
@@ -173,20 +177,18 @@ public class AdminController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> CreatePhoto(PhotoFormViewModel vm, IFormFile? ImageFile)
     {
-        
-
-        var imageUrl = vm.ImageUrl;
-        if (ImageFile != null && ImageFile.Length > 0)
-        {
-            imageUrl = await SaveUploadedFile(ImageFile, "photos");
-        }
-
         if (!ModelState.IsValid)
         {
             TempData["Errors"] = string.Join("|", ModelState.Values
             .SelectMany(v => v.Errors)
             .Select(e => e.ErrorMessage));
             return View(vm);
+        }
+
+        var imageUrl = vm.ImageUrl;
+        if (ImageFile != null && ImageFile.Length > 0)
+        {
+            imageUrl = await SaveUploadedFile(ImageFile, "photos");
         }
 
         _db.Photos.Add(new Photo
@@ -482,6 +484,86 @@ public class AdminController : Controller
             .ToListAsync();
 
         return View(stories);
+    }
+
+    // ── Pending Photos (Approve/Reject) ──────────────────────
+    public async Task<IActionResult> PendingPhotos()
+    {
+        var pendingPhotos = await _db.Photos
+            .Where(p => p.Status == "Pending")
+            .OrderByDescending(p => p.SubmittedAt)
+            .Include(p => p.SubmittedByUser)
+            .ToListAsync();
+        return View(pendingPhotos);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> ApprovePhoto(int id)
+    {
+        var photo = await _db.Photos.FindAsync(id);
+        if (photo == null) return NotFound();
+
+        photo.Status = "Published";
+        photo.ApprovedAt = DateTime.UtcNow;
+        photo.ApprovedByUserId = _users.GetUserId(User);
+
+        await _db.SaveChangesAsync();
+        TempData["Success"] = $"Photo '{photo.Title}' approved and published.";
+        return RedirectToAction(nameof(PendingPhotos));
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> RejectPhoto(int id, string rejectionReason)
+    {
+        var photo = await _db.Photos.FindAsync(id);
+        if (photo == null) return NotFound();
+
+        photo.Status = "Rejected";
+        photo.RejectionReason = rejectionReason;
+        await _db.SaveChangesAsync();
+
+        TempData["Success"] = $"Photo '{photo.Title}' rejected.";
+        return RedirectToAction(nameof(PendingPhotos));
+    }
+
+    // ── Pending Documents (Approve/Reject) ──────────────────────
+    public async Task<IActionResult> PendingDocuments()
+    {
+        var pendingDocs = await _db.Documents
+            .Where(d => d.Status == "Pending")
+            .OrderByDescending(d => d.SubmittedAt)
+            .Include(d => d.SubmittedByUser)
+            .ToListAsync();
+        return View(pendingDocs);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> ApproveDocument(int id)
+    {
+        var doc = await _db.Documents.FindAsync(id);
+        if (doc == null) return NotFound();
+
+        doc.Status = "Published";
+        doc.ApprovedAt = DateTime.UtcNow;
+        doc.ApprovedByUserId = _users.GetUserId(User);
+
+        await _db.SaveChangesAsync();
+        TempData["Success"] = $"Document '{doc.Title}' approved and published.";
+        return RedirectToAction(nameof(PendingDocuments));
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> RejectDocument(int id, string rejectionReason)
+    {
+        var doc = await _db.Documents.FindAsync(id);
+        if (doc == null) return NotFound();
+
+        doc.Status = "Rejected";
+        doc.RejectionReason = rejectionReason;
+        await _db.SaveChangesAsync();
+
+        TempData["Success"] = $"Document '{doc.Title}' rejected.";
+        return RedirectToAction(nameof(PendingDocuments));
     }
 
     // ── File Upload Helper ────────────────────────────────────

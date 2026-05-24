@@ -4,6 +4,7 @@ using CebuHistory.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CebuHistory.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260524070952_SyncPendingChanges")]
+    partial class SyncPendingChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,12 +171,6 @@ namespace CebuHistory.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("ApprovedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ApprovedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -192,26 +189,10 @@ namespace CebuHistory.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("RejectionReason")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Source")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("SubmittedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SubmittedByName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SubmittedByUserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ThumbnailUrl")
                         .HasColumnType("nvarchar(max)");
@@ -232,8 +213,6 @@ namespace CebuHistory.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubmittedByUserId");
-
                     b.HasIndex("UploadedById");
 
                     b.ToTable("Documents");
@@ -246,12 +225,6 @@ namespace CebuHistory.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("ApprovedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ApprovedByUserId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -277,26 +250,10 @@ namespace CebuHistory.Migrations
                     b.Property<string>("Photographer")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RejectionReason")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Source")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("SubmittedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SubmittedByName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SubmittedByUserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ThumbnailUrl")
                         .HasColumnType("nvarchar(max)");
@@ -316,8 +273,6 @@ namespace CebuHistory.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SubmittedByUserId");
 
                     b.HasIndex("UploadedById");
 
@@ -637,32 +592,20 @@ namespace CebuHistory.Migrations
 
             modelBuilder.Entity("CebuHistory.Models.HistoricalDocument", b =>
                 {
-                    b.HasOne("CebuHistory.Models.ApplicationUser", "SubmittedByUser")
-                        .WithMany()
-                        .HasForeignKey("SubmittedByUserId");
-
                     b.HasOne("CebuHistory.Models.ApplicationUser", "UploadedBy")
                         .WithMany()
                         .HasForeignKey("UploadedById")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("SubmittedByUser");
 
                     b.Navigation("UploadedBy");
                 });
 
             modelBuilder.Entity("CebuHistory.Models.Photo", b =>
                 {
-                    b.HasOne("CebuHistory.Models.ApplicationUser", "SubmittedByUser")
-                        .WithMany()
-                        .HasForeignKey("SubmittedByUserId");
-
                     b.HasOne("CebuHistory.Models.ApplicationUser", "UploadedBy")
                         .WithMany()
                         .HasForeignKey("UploadedById")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("SubmittedByUser");
 
                     b.Navigation("UploadedBy");
                 });

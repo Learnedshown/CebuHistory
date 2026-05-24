@@ -1,0 +1,78 @@
+﻿@model List<Photo>
+@{
+    ViewData["Title"] = "My Photos";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="font-['Playfair_Display'] text-3xl font-bold">My Photos</h1>
+        <a href="/SubmitPhoto" class="bg-[#8b3a18] text-white px-4 py-2 text-sm rounded hover:bg-[#b0501f]">+ New Photo</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+            @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-12 bg-gray-50">
+            <p class="text-gray-500">You haven't submitted any photos yet.</p>
+            <a href="/SubmitPhoto" class="inline-block mt-4 text-[#8b3a18]">Submit your first photo →</a>
+        </div>
+    }
+    else
+    {
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @foreach (var photo in Model)
+            {
+                var statusColor = photo.Status switch
+                {
+                    "Pending" => "bg-yellow-100 text-yellow-800",
+                    "Published" => "bg-green-100 text-green-800",
+                    "Rejected" => "bg-red-100 text-red-800",
+                    _ => "bg-gray-100 text-gray-800"
+                };
+
+                <div class="border p-4 bg-white rounded-lg flex gap-4">
+                    <div class="flex-shrink-0 w-24 h-24 bg-gray-100 rounded overflow-hidden">
+                        <img src="@photo.ImageUrl" alt="@photo.Title" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400?text=No+Image'" />
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs px-2 py-1 rounded @statusColor">@photo.Status</span>
+                            @if (photo.Status == "Rejected" && !string.IsNullOrEmpty(photo.RejectionReason))
+                            {
+                                <span class="text-xs text-red-600">Reason: @photo.RejectionReason</span>
+                            }
+                        </div>
+                        <h3 class="font-bold">@photo.Title</h3>
+                        <p class="text-gray-500 text-sm">@photo.Era @(photo.Year.HasValue ? "· " + photo.Year : "")</p>
+                        <div class="flex gap-3 mt-2">
+                            @if (photo.Status == "Pending" || photo.Status == "Rejected")
+                            {
+                                <a href="/SubmitPhoto/EditPhoto/@photo.Id" class="text-blue-600 text-sm">Edit</a>
+                                <form method="post" asp-action="DeletePhoto" asp-route-id="@photo.Id" class="inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="text-red-600 text-sm" onclick="return confirm('Delete this photo?')">Delete</button>
+                                </form>
+                            }
+                            else if (photo.Status == "Published")
+                            {
+                                <a href="/Gallery" class="text-green-600 text-sm">View in Gallery</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

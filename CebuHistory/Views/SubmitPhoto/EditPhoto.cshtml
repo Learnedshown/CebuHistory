@@ -1,0 +1,85 @@
+﻿@model SubmitPhotoViewModel
+@{
+    ViewData["Title"] = "Edit Photo";
+}
+
+<div class="max-w-2xl mx-auto px-6 py-12">
+    <h1 class="font-['Playfair_Display'] text-3xl font-bold mb-6">Edit Your Photo</h1>
+
+    @if (!string.IsNullOrEmpty(Model.RejectionReason))
+    {
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <strong>This photo was rejected:</strong> @Model.RejectionReason
+            <br />Please edit and resubmit.
+        </div>
+    }
+
+    <form method="post" enctype="multipart/form-data" class="space-y-5">
+        @Html.AntiForgeryToken()
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Title *</label>
+            <input asp-for="Title" class="w-full bg-white border border-gold/30 px-4 py-2.5" required />
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Description</label>
+            <textarea asp-for="Description" rows="3" class="w-full bg-white border border-gold/30 px-4 py-2.5"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Era</label>
+                <select asp-for="Era" class="w-full bg-white border border-gold/30 px-4 py-2.5">
+                    <option>Pre-Colonial</option>
+                    <option>Spanish Colonial</option>
+                    <option>American Period</option>
+                    <option>World War II</option>
+                    <option>Modern</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Year</label>
+                <input asp-for="Year" type="number" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Location</label>
+                <input asp-for="Location" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+            </div>
+            <div>
+                <label class="block text-stone text-xs tracking-widest uppercase mb-1">Photographer</label>
+                <input asp-for="Photographer" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Source / Attribution</label>
+            <input asp-for="Source" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">📷 Upload New Image (optional)</label>
+            <input type="file" name="ImageFile" accept="image/*" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+        </div>
+
+        <div>
+            <label class="block text-stone text-xs tracking-widest uppercase mb-1">Image URL</label>
+            <input asp-for="ImageUrl" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+        </div>
+
+        <div class="flex items-center gap-2">
+            <input asp-for="IsPublicDomain" type="checkbox" class="accent-sienna" />
+            <label asp-for="IsPublicDomain" class="text-stone text-sm">Public domain / open access</label>
+        </div>
+
+        <div class="flex gap-4 pt-4">
+            <button type="submit" class="bg-[#8b3a18] text-white px-8 py-3 text-sm tracking-widest uppercase hover:bg-[#b0501f] transition-colors">
+                Save Changes & Resubmit
+            </button>
+            <a href="/SubmitPhoto/MyPhotos" class="text-stone text-sm tracking-widest uppercase self-center hover:text-ink">Cancel</a>
+        </div>
+    </form>
+</div>

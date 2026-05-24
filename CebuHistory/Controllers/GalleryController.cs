@@ -12,10 +12,11 @@ public class GalleryController : Controller
 
     public async Task<IActionResult> Index(string? era)
     {
-        var query = _db.Photos.AsQueryable();
+        // Only show photos with Status = "Published"
+        var query = _db.Photos.Where(p => p.Status == "Published").AsQueryable();
         if (!string.IsNullOrEmpty(era)) query = query.Where(p => p.Era == era);
 
-        var all = await _db.Photos.ToListAsync();
+        var all = await _db.Photos.Where(p => p.Status == "Published").ToListAsync();
         var vm = new GalleryViewModel
         {
             Photos = await query.OrderByDescending(p => p.Year).ToListAsync(),

@@ -105,6 +105,8 @@ public class AdminDashboardViewModel
     public int TotalUsers { get; set; }
     public List<Story> RecentStories { get; set; } = new List<Story>();
     public int PendingStories { get; set; }
+    public int PendingPhotos { get; set; }       
+    public int PendingDocuments { get; set; }
     public int ApprovedStories { get; set; }
     public int RejectedStories { get; set; }
     public List<Story> RecentSubmissions { get; set; } = new List<Story>();  // Initialize with empty list
@@ -138,5 +140,34 @@ public class EditStoryViewModel
     public string Category { get; set; } = "";
     public string? CoverImage { get; set; } = "";
     public string Tags { get; set; } = "";
+    public string? RejectionReason { get; set; }
+}
+
+public class SubmitPhotoViewModel
+{
+    public int Id { get; set; }
+    [Required, MaxLength(200)] public string Title { get; set; } = "";
+    public string Description { get; set; } = "";
+    public string? ImageUrl { get; set; }
+    public string Era { get; set; } = "";
+    public int? Year { get; set; }
+    public string Source { get; set; } = "";
+    public string Location { get; set; } = "";
+    public string? Photographer { get; set; }
+    public bool IsPublicDomain { get; set; } = true;
+    public string? RejectionReason { get; set; }
+}
+
+public class SubmitDocumentViewModel
+{
+    public int Id { get; set; }
+    [Required, MaxLength(200)] public string Title { get; set; } = "";
+    public string Description { get; set; } = "";
+    [Required] public string DocumentUrl { get; set; } = "";
+    public string? ThumbnailUrl { get; set; }
+    public string Era { get; set; } = "";
+    public int? Year { get; set; }
+    public string Source { get; set; } = "";
+    public string DocumentType { get; set; } = "";
     public string? RejectionReason { get; set; }
 }

@@ -12,10 +12,11 @@ public class DocumentsController : Controller
 
     public async Task<IActionResult> Index(string? type)
     {
-        var query = _db.Documents.AsQueryable();
+        // Only show documents with Status = "Published"
+        var query = _db.Documents.Where(d => d.Status == "Published").AsQueryable();
         if (!string.IsNullOrEmpty(type)) query = query.Where(d => d.DocumentType == type);
 
-        var all = await _db.Documents.ToListAsync();
+        var all = await _db.Documents.Where(d => d.Status == "Published").ToListAsync();
         var vm = new DocumentsViewModel
         {
             Documents = await query.OrderByDescending(d => d.Year).ToListAsync(),

@@ -1,0 +1,148 @@
+﻿@model List<HistoricalDocument>
+@{
+    ViewData["Title"] = "Pending Documents";
+}
+
+<div class="max-w-6xl mx-auto px-6 py-12">
+    <h1 class="font-['Playfair_Display'] text-3xl mb-4">Pending Documents</h1>
+    <p class="text-gray-600 mb-8">Review and approve documents submitted by users.</p>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-12 bg-gray-50">
+            <p class="text-gray-500">No pending documents. Check back later!</p>
+        </div>
+    }
+    else
+    {
+        <div class="space-y-6">
+            @foreach (var doc in Model)
+            {
+                <div class="border p-6 bg-white rounded-lg">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex gap-3 text-sm text-gray-500 mb-2 flex-wrap">
+                                <span>Submitted by: <strong>@(doc.SubmittedByName ?? "Anonymous")</strong></span>
+                                <span>📅 @doc.SubmittedAt?.ToString("MMM dd, yyyy")</span>
+                                @if (doc.SubmittedByUser != null)
+                                {
+                                    <span>📧 @doc.SubmittedByUser.Email</span>
+                                }
+                            </div>
+
+                            <div class="flex gap-6">
+                                <!-- Thumbnail -->
+                                <div class="flex-shrink-0 w-32 h-32 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                                    @if (!string.IsNullOrEmpty(doc.ThumbnailUrl))
+                                    {
+                                        <img src="@doc.ThumbnailUrl" alt="@doc.Title" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400?text=Document'" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-4xl">📄</span>
+                                    }
+                                </div>
+
+                                <!-- Details -->
+                                <div class="flex-1">
+                                    <h2 class="font-['Playfair_Display'] text-xl font-bold">@doc.Title</h2>
+                                    <p class="text-gray-600 mt-1">@doc.Description</p>
+                                    <div class="flex gap-3 mt-2 text-sm text-gray-500 flex-wrap">
+                                        <span>📂 Era: <strong>@doc.Era</strong></span>
+                                        @if (doc.Year.HasValue)
+                                        {
+                                            <span>📅 Year: <strong>@doc.Year</strong></span>
+                                        }
+                                        <span>📑 Type: <strong>@doc.DocumentType</strong></span>
+                                        <span>🔗 Source: <strong>@doc.Source</strong></span>
+                                    </div>
+                                    <a href="@doc.DocumentUrl" target="_blank" class="inline-block mt-2 text-blue-600 text-sm hover:underline">View Document →</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 ml-4">
+                            <button onclick="openApproveModal(@doc.Id, '@doc.Title.Replace("'", "\\'")')"
+                                    class="bg-green-600 text-white px-4 py-2 text-sm rounded hover:bg-green-700">
+                                ✓ Approve
+                            </button>
+                            <button onclick="openRejectModal(@doc.Id, '@doc.Title.Replace("'", "\\'")')"
+                                    class="bg-red-600 text-white px-4 py-2 text-sm rounded hover:bg-red-700">
+                                ✗ Reject
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="mt-8">
+        <a href="/Admin" class="text-[#8b3a18]">← Back to Dashboard</a>
+    </div>
+</div>
+
+<!-- Approve Modal -->
+<div id="approveModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">Approve Document</h3>
+        <p class="mb-4">Are you sure you want to approve "<span id="approveTitle"></span>"? It will be published immediately.</p>
+        <form id="approveForm" method="post" asp-action="ApproveDocument">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="approveId" />
+            <div class="flex gap-3 justify-end">
+                <button type="button" onclick="closeApproveModal()" class="px-4 py-2 border rounded">Cancel</button>
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Approve</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div id="rejectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">Reject Document</h3>
+        <p class="mb-2">Reject "<span id="rejectTitle"></span>"</p>
+        <form id="rejectForm" method="post" asp-action="RejectDocument">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="rejectId" />
+            <div class="mb-4">
+                <label class="block text-sm font-bold mb-1">Rejection Reason (visible to user)</label>
+                <textarea name="rejectionReason" rows="3" class="w-full border p-2 rounded" required></textarea>
+            </div>
+            <div class="flex gap-3 justify-end">
+                <button type="button" onclick="closeRejectModal()" class="px-4 py-2 border rounded">Cancel</button>
+                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Reject</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openApproveModal(id, title) {
+        document.getElementById('approveId').value = id;
+        document.getElementById('approveTitle').innerText = title;
+        document.getElementById('approveModal').classList.remove('hidden');
+        document.getElementById('approveModal').classList.add('flex');
+    }
+    function closeApproveModal() {
+        document.getElementById('approveModal').classList.add('hidden');
+        document.getElementById('approveModal').classList.remove('flex');
+    }
+    function openRejectModal(id, title) {
+        document.getElementById('rejectId').value = id;
+        document.getElementById('rejectTitle').innerText = title;
+        document.getElementById('rejectModal').classList.remove('hidden');
+        document.getElementById('rejectModal').classList.add('flex');
+    }
+    function closeRejectModal() {
+        document.getElementById('rejectModal').classList.add('hidden');
+        document.getElementById('rejectModal').classList.remove('flex');
+    }
+</script>
