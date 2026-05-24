@@ -72,15 +72,15 @@
         <!-- File Upload -->
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">📄 Upload Document (PDF, Image)</label>
-            <input type="file" name="DocumentFile" accept=".pdf,.jpg,.png,.gif" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+            <input type="file" name="DocumentFile" accept=".pdf,.jpg,.png,.gif" class="w-full bg-white border border-gold/30 px-4 py-2.5" required/>
             <p class="text-xs text-gray-400 mt-1">Upload PDF or image file</p>
         </div>
-
+        <!--
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">🔗 Document URL (or fallback)</label>
             <input asp-for="DocumentUrl" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5" placeholder="https://..." />
         </div>
-
+        -->
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">🖼️ Thumbnail URL (optional)</label>
             <input asp-for="ThumbnailUrl" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5" placeholder="https://..." />

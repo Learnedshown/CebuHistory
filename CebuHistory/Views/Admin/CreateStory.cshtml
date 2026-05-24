@@ -49,15 +49,15 @@
         <!-- UPLOAD BUTTON - NEW! -->
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">Cover Image (Upload from computer)</label>
-            <input type="file" name="CoverImageFile" accept="image/*" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            <input type="file" name="CoverImageFile" accept="image/*" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" required />
             <p class="text-stone/60 text-xs mt-1">Or provide URL below</p>
         </div>
-
+        <!--
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">Cover Image URL (or fallback)</label>
             <input asp-for="CoverImage" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" placeholder="https://..." />
         </div>
-
+         -->
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">Excerpt (short summary)</label>
             <textarea asp-for="Excerpt" rows="2" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna"></textarea>

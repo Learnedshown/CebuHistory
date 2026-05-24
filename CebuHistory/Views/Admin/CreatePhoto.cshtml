@@ -18,16 +18,16 @@
         <!-- FILE UPLOAD BUTTON - NEW! -->
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">Upload Image (from computer)</label>
-            <input type="file" name="ImageFile" accept="image/*" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" />
+            <input type="file" name="ImageFile" accept="image/*" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" required/>
             <p class="text-stone/60 text-xs mt-1">📸 Click "Browse" to select an image from your computer</p>
         </div>
-
+        <!--
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">Image URL (or fallback)</label>
             <input asp-for="ImageUrl" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna" placeholder="https://..." />
             <p class="text-stone/60 text-xs mt-1">Only needed if you don't upload a file</p>
         </div>
-
+        -->
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">Description</label>
             <textarea asp-for="Description" rows="3" class="w-full bg-white border border-gold/30 px-4 py-2.5 text-ink focus:outline-none focus:border-sienna"></textarea>

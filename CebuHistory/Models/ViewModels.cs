@@ -89,7 +89,7 @@ public class DocumentFormViewModel
     public int Id { get; set; }
     [Required, MaxLength(200)] public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    [Required] public string DocumentUrl { get; set; } = string.Empty;
+    public string? DocumentUrl { get; set; } = string.Empty;
     public string? ThumbnailUrl { get; set; }
     [MaxLength(100)] public string Era { get; set; } = string.Empty;
     public int? Year { get; set; }
@@ -163,7 +163,7 @@ public class SubmitDocumentViewModel
     public int Id { get; set; }
     [Required, MaxLength(200)] public string Title { get; set; } = "";
     public string Description { get; set; } = "";
-    [Required] public string DocumentUrl { get; set; } = "";
+    public string? DocumentUrl { get; set; } = "";
     public string? ThumbnailUrl { get; set; }
     public string Era { get; set; } = "";
     public int? Year { get; set; }

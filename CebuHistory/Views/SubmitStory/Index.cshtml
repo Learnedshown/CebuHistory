@@ -72,16 +72,16 @@
         <!-- FILE UPLOAD BUTTON - NEW! -->
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">📷 Upload Image (from your computer)</label>
-            <input type="file" name="ImageFile" accept="image/*" class="w-full bg-white border border-gold/30 px-4 py-2.5" />
+            <input type="file" name="ImageFile" accept="image/*" class="w-full bg-white border border-gold/30 px-4 py-2.5" required />
             <p class="text-xs text-gray-400 mt-1">Click "Browse" to select an image from your computer</p>
         </div>
-
+        <!--
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">🔗 Image URL (or fallback)</label>
             <input asp-for="CoverImage" type="url" class="w-full bg-white border border-gold/30 px-4 py-2.5" placeholder="https://..." />
             <p class="text-xs text-gray-400 mt-1">Only needed if you don't upload a file</p>
         </div>
-
+        -->
         <div>
             <label class="block text-stone text-xs tracking-widest uppercase mb-1">Short Excerpt/Summary *</label>
             <textarea asp-for="Excerpt" rows="2" class="w-full bg-white border border-gold/30 px-4 py-2.5" required></textarea>
